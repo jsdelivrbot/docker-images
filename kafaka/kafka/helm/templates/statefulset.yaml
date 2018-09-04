@@ -68,7 +68,7 @@ spec:
           --override background.threads=10 \
           --override compression.codec=snappy \ 
           --override compression.type=producer \
-          --override delete.topic.enable=false \
+          --override delete.topic.enable=true \
           --override leader.imbalance.check.interval.seconds=300 \
           --override leader.imbalance.per.broker.percentage=10 \
           --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} \
@@ -82,7 +82,7 @@ spec:
           --override log.roll.jitter.hours=0 \
           --override log.segment.bytes=1073741824 \
           --override log.segment.delete.delay.ms=60000 \
-          --override message.max.bytes=1000012 \
+          --override message.max.bytes=1048576 \
           --override min.insync.replicas=1 \
           --override num.io.threads=8 \
           --override num.network.threads=8 \
@@ -100,7 +100,7 @@ spec:
           --override offsets.topic.segment.bytes=104857600 \
           --override queued.max.requests=1000 \
           --override queue.buffering.max.ms=5000 \
-          --override queue.buffering.max.messages=10000 \
+          --override queue.buffering.max.messages=100000 \
           --override queue.enqueue.timeout.ms=-1 \
           --override batch.num.messages=200 \
           --override quota.consumer.default=9223372036854775807 \
