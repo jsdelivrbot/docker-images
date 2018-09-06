@@ -11,16 +11,16 @@ spec:
     - name: base
       port: 9994
       protocol: TCP
-    - name: p1
+    - name: stat
       port: 9995
       protocol: TCP
-    - name: p2
+    - name: span
       port: 9996
       protocol: TCP
-    - name:p3
+    - name: stat-udp
       port: 9995
       protocol: UDP
-    - name: p4
+    - name: span-udp
       port: 9996
       protocol: UDP
 ---
@@ -32,6 +32,19 @@ spec:
   selector:
     app: pinpoint-collector
   ports:
-    - name: http
-      port: 8080
+    - name: base
+      port: 9994
+      protocol: TCP
+    - name: stat
+      port: 9995
+      protocol: TCP
+    - name: span
+      port: 9996
+      protocol: TCP
+    - name: stat-udp
+      port: 9995
+      protocol: UDP
+    - name: span-udp
+      port: 9996
+      protocol: UDP
   type: NodePort
