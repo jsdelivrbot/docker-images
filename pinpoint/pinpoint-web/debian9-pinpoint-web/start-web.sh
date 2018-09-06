@@ -11,7 +11,7 @@ sed -i "/config.show.applicationStat=/ s/=.*/=${CONFIG_SHOW_APPLICATIONSTAT}/" /
 
 sed -i "/hbase.client.host=/ s/=.*/=${HBASE_HOST}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/hbase.properties
 sed -i "/hbase.client.port=/ s/=.*/=${HBASE_PORT}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/hbase.properties
-sed -i "/base.zookeeper.znode.parent=/ s/=.*/=${HBASE_ZNODE_PARENT}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/hbase.properties
+sed -i "/base.zookeeper.znode.parent=/ s/=.*/=\/${HBASE_ZNODE_PARENT}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/hbase.properties
 
 sed -i "/batch.enable=/ s/=.*/=${BATCH_ENABLE}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/batch.properties
 sed -i "/batch.server.ip=/ s/=.*/=${BATCH_SERVER_IP}/" /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/batch.properties
@@ -22,6 +22,6 @@ sed -i "/level value=/ s/=.*/=\"${DEBUG_LEVEL}\"\/>/g" /usr/local/tomcat/webapps
 echo "jdbc.driverClassName=${JDBC_DRIVER_CLASS_NAME}" > /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jdbc.properties
 echo "jdbc.url=${JDBC_URL}" >> /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jdbc.properties
 echo "jdbc.username=${JDBC_USERNAME}" >> /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jdbc.properties
-echo "jdbc.password=${JDBC_PASSWORD" >> /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jdbc.properties
+echo "jdbc.password=${JDBC_PASSWORD}" >> /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/jdbc.properties
 
 exec /usr/local/tomcat/bin/catalina.sh run

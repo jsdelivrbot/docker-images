@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: pinpoit-web
+  name: pinpoint-web
   namespace: default
   labels:
-    app: pinpoit-web
+    app: pinpoint-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pinpoit-web
+      app: pinpoint-web
 #  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
-  serviceName: pinpoit-web
+  serviceName: pinpoint-web
   template:
     metadata:
       labels:
-        app: pinpoit-web
+        app: pinpoint-web
       annotations:
         #disable istio sidecar injection
         sidecar.istio.io/inject: "false"
@@ -32,7 +32,7 @@ spec:
       #- name: registrykey-ali-ext
       containers:
       - name: pinpoit-web
-        image: slpcat/pinpoit-web:debian9
+        image: slpcat/pinpoint-web:debian9
         imagePullPolicy: Always
         resources:
           requests:
@@ -59,7 +59,7 @@ spec:
         - name: HBASE_PORT
           value: "2181"
         - name: HBASE_ZNODE_PARENT
-          value: "/hbase"
+          value: "hbase"
         - name: JDBC_DRIVER_CLASS_NAME
           value: "com.mysql.jdbc.Driver"
         - name: JDBC_URL
