@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: pinpoint-collector
+  name: pinpoint-agent
   namespace: default
   labels:
-    app: pinpoint-collector
+    app: pinpoint-agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pinpoint-collector
+      app: pinpoint-agent
 #  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
-  serviceName: pinpoint-collector
+  serviceName: pinpoint-agent
   template:
     metadata:
       labels:
-        app: pinpoint-collector
+        app: pinpoint-agent
       annotations:
         #disable istio sidecar injection
         sidecar.istio.io/inject: "false"
@@ -31,8 +31,8 @@ spec:
       #imagePullSecrets:
       #- name: registrykey-ali-ext
       containers:
-      - name: pinpoint-collector
-        image: slpcat/pinpoint-collector:debian9
+      - name: pinpoint-agent
+        image: slpcat/pinpoint-agent
         imagePullPolicy: Always
         resources:
           requests:
@@ -46,26 +46,15 @@ spec:
           capabilities: {}
           privileged: false
         env:
-        - name: CLUSTER_ENABLE
-          value: "true"
-        - name: CLUSTER_ZOOKEEPER_ADDRESS
-          value: "zk-svc:2181"
-        - name: HBASE_HOST
-          value: "hbase-zk"
-        - name: HBASE_PORT
-          value: "2181"
-        - name: HBASE_ZNODE_PARENT
-          value: "hbase"
+        - name: COLLECTOR_IP
+          value: "pinpoint-collector-headless"
+        - name: COLLECTOR_TCP_PORT
+          value: "9994"
+        - name: COLLECTOR_STAT_PORT
+          value: "9995"
+        - name: COLLECTOR_SPAN_PORT
+          value: "9996"
+        - name: PROFILER_SAMPLING_RATE
+          value: "20"
         - name: DEBUG_LEVEL
           value: info
-        ports:
-        - containerPort: 9994
-          protocol: TCP
-        - containerPort: 9995
-          protocol: TCP
-        - containerPort: 9996
-          protocol: TCP
-        - containerPort: 9995
-          protocol: UDP
-        - containerPort: 9996
-          protocol: UDP

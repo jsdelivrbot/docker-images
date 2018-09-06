@@ -1,4 +1,4 @@
-FROM tomcat:8-jre8
+FROM slpcat/tomcat8:alpine-8.5
 MAINTAINER 若虚 <slpcat@qq.com>
 
 ARG PINPOINT_VERSION=${PINPOINT_VERSION:-1.7.3}
