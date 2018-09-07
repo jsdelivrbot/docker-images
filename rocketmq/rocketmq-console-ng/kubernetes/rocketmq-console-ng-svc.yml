@@ -12,3 +12,4 @@ spec:
     name: web
   selector:
     app: rocketmq-console-ng
+  type: NodePort

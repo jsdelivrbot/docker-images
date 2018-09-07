@@ -11,12 +11,6 @@ spec:
     - name: base
       port: 9994
       protocol: TCP
-    - name: stat
-      port: 9995
-      protocol: TCP
-    - name: span
-      port: 9996
-      protocol: TCP
     - name: stat-udp
       port: 9995
       protocol: UDP
@@ -28,18 +22,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: pinpoint-collector
+  namespace: default
 spec:
   selector:
     app: pinpoint-collector
   ports:
     - name: base
       port: 9994
-      protocol: TCP
-    - name: stat
-      port: 9995
-      protocol: TCP
-    - name: span
-      port: 9996
       protocol: TCP
     - name: stat-udp
       port: 9995
