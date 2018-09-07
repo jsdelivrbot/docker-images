@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat8
+  namespace: default
+  labels:
+    app: tomcat8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat8
+#  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
+  strategy:
+    rollingUpdate:  ##由于replicas为3,则整个升级,pod个数在2-4个之间
+      maxSurge: 1      #滚动升级时会先启动1个pod
+      maxUnavailable: 1 #滚动升级时允许的最大Unavailable的pod个数
+  template:
+    metadata:
+      labels:
+        app: tomcat8
+      annotations:
+        #net.ipv4.tcp_syncookies=0 need kernel version 4.4 or newer
+        security.alpha.kubernetes.io/sysctls: "net.ipv4.tcp_syncookies=0,net.ipv4.ip_local_port_range=10000 65535"
+        #kernel version 4.15 needed
+        security.alpha.kubernetes.io/unsafe-sysctls: "net.core.somaxconn=65535,net.ipv4.tcp_tw_reuse=1,net.ipv4.tcp_fin_timeout=30,net.ipv4.tcp_keepalive_intvl=4,net.ipv4.tcp_keepalive_probes=3,net.ipv4.tcp_keepalive_time=120,net.ipv4.tcp_max_syn_backlog=65535,net.ipv4.tcp_rfc1337=1,net.ipv4.tcp_slow_start_after_idle=0,net.ipv4.tcp_fack=1,net.ipv4.tcp_max_tw_buckets=262144,net.ipv4.tcp_fastopen=3,net.ipv4.icmp_ratelimit=100,net.ipv4.tcp_abort_on_overflow=1,net.ipv4.tcp_adv_win_scale=2,net.ipv4.tcp_retries2=8,net.ipv4.tcp_syn_retries=3,net.ipv4.tcp_synack_retries=2,net.unix.max_dgram_qlen=512,net.ipv4.tcp_fwmark_accept=1,net.ipv4.fwmark_reflect=1,net.ipv4.tcp_no_metrics_save=1,net.netfilter.nf_conntrack_helper=1,net.netfilter.nf_conntrack_max=1048576,net.netfilter.nf_conntrack_tcp_timeout_close_wait=60,net.netfilter.nf_conntrack_tcp_timeout_established=120,net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30,net.netfilter.nf_conntrack_tcp_timeout_last_ack=30,net.netfilter.nf_conntrack_tcp_timeout_time_wait=60"
+    spec:
+      terminationGracePeriodSeconds: 60 ##k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+      #imagePullSecrets:
+      #- name: registrykey-ali-ext
+      containers:
+      - name: tomcat8
+        #image: registry.cn-beijing.aliyuncs.com/example/example_web:${BUILD_NUMBER}
+        image: slpcat/tomcat:alpine-8.5-pinpoint
+        imagePullPolicy: Always
+        livenessProbe: #kubernetes认为该pod是存活的,不存活则需要重启
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60 ## equals to the maximum startup time of the application + couple of seconds
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe: #kubernetes认为该pod是启动成功的
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30 ## equals to minimum startup time of the application
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+        resources:
+          # keep request = limit to keep this container in guaranteed class
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 4
+            memory: 8Gi
+        env:
+          - name: PINPOINT_VERSION
+            value: "1.7.3"
+          - name: AGENT_ID
+            value: "k8s-tomcat"
+          - name: APP_NAME
+            value: "tomcat-demo"
+          - name: COLLECTOR_IP
+            value: "pinpoint-collector-headless"
+          - name: COLLECTOR_TCP_PORT
+            value: "9994"
+          - name: COLLECTOR_STAT_PORT
+            value: "9995"
+          - name: COLLECTOR_SPAN_PORT
+            value: "9996"
+          - name: PROFILER_SAMPLING_RATE
+            value: "20"
+          - name: DEBUG_LEVEL
+            value: "INFO"
+          - name: JAVA_OPTS
+            value: "-server -Djava.awt.headless=true -javaagent:/pinpoint-agent/pinpoint-bootstrap-${PINPOINT_VERSION}.jar -Dpinpoint.agentId=${AGENT_ID} -Dpinpoint.applicationName=${APP_NAME} -Xverify:none -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:ReservedCodeCacheSize=240M -XX:MaxRAMFraction=1 -XshowSettings:vm -XX:+AggressiveOpts -XX:-UseBiasedLocking -XX:+UseFastAccessorMethods -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:SoftRefLRUPolicyMSPerMB=0 -XX:G1ReservePercent=25 -XX:G1NewSizePercent=10 -XX:G1MaxNewSizePercent=25 -XX:MaxGCPauseMillis=20 -XX:-OmitStackTraceInFastThrow -XX:+ParallelRefProcEnabled -XX:ParallelGCThreads=8 -XX:MaxTenuringThreshold=1 -XX:G1HeapWastePercent=10 -XX:SurvivorRatio=8 -XX:G1MixedGCCountTarget=16 -XX:G1MixedGCLiveThresholdPercent=90 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=32m -XX:+PerfDisableSharedMem -XX:-ResizePLAB"
+        ports:
+          - name: http
+            containerPort: 8080
