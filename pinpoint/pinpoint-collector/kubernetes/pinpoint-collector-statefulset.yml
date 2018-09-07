@@ -32,7 +32,7 @@ spec:
       #- name: registrykey-ali-ext
       containers:
       - name: pinpoint-collector
-        image: slpcat/pinpoint-collector:debian9
+        image: slpcat/pinpoint-collector:alpine
         imagePullPolicy: Always
         resources:
           requests:
