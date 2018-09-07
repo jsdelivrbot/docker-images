@@ -36,7 +36,7 @@ spec:
         command:
         - sh
         - -c
-        - "exec configure-agent.sh && catalina.sh run"
+        - "configure-agent.sh && catalina.sh run"
         livenessProbe: #kubernetes认为该pod是存活的,不存活则需要重启
           httpGet:
             path: /
