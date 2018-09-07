@@ -33,6 +33,10 @@ spec:
         #image: registry.cn-beijing.aliyuncs.com/example/example_web:${BUILD_NUMBER}
         image: slpcat/tomcat:alpine-8.5-pinpoint
         imagePullPolicy: Always
+        command:
+        - sh
+        - -c
+        - "exec configure-agent.sh && catalina.sh run"
         livenessProbe: #kubernetes认为该pod是存活的,不存活则需要重启
           httpGet:
             path: /
