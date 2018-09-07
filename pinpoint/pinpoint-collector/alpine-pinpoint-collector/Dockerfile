@@ -10,7 +10,7 @@ COPY start-collector.sh /usr/local/bin/
 RUN chmod a+x /usr/local/bin/start-collector.sh \
     && curl -SL ${INSTALL_URL} -o pinpoint-collector.war \
     && rm -rf /usr/local/tomcat/webapps \
-    && mkdir -p /usr/local/tomcat/webapps \
+    && mkdir -p /usr/local/tomcat/webapps/ROOT \
     && unzip pinpoint-collector.war -d /usr/local/tomcat/webapps/ROOT \
     && rm -rf pinpoint-collector.war \
     && sed -i "s/8005/9005/g" /usr/local/tomcat/conf/server.xml \
