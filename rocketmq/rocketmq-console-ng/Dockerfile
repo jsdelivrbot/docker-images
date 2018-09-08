@@ -1,4 +1,4 @@
-FROM  maven:3.5.3
+FROM  maven:3.5.3 AS build
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -10,8 +10,7 @@ ENV \
     TIMEZONE="Asia/Shanghai"
 
 RUN \
-    sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
-    && sed -i 's/security.debian.org/mirrors.aliyun.com\/debian-security/' /etc/apt/sources.list
+    sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 
 # Set timezone and locales
 RUN \
@@ -38,10 +37,14 @@ RUN \
 
 WORKDIR /opt/rocketmq/rocketmq-externals/rocketmq-console
 RUN \
-    mvn clean package -Dmaven.test.skip=true && \
-    mv target/rocketmq-console-ng-1.0.0.jar /opt/rocketmq && \
-    rm -rf /opt/rocketmq-externals
+    mvn clean package -Dmaven.test.skip=true
 
+FROM slpcat/jdk:alpine
+ENV JAVA_OPTS="-Drocketmq.namesrv.addr=127.0.0.1:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=true"
+RUN \
+    mkdir -p /opt/rocketmq && \
+    cd /opt/rocketmq 
+COPY --from=build /opt/rocketmq/rocketmq-externals/rocketmq-console/target/rocketmq-console-ng-1.0.0.jar /opt/rocketmq/
 WORKDIR /opt/rocketmq
 EXPOSE 8080
 CMD  ["sh" "-c" "java" "$JAVA_OPTS" "-jar" "rocketmq-console-ng-1.0.0.jar"]
