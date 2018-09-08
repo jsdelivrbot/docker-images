@@ -26,3 +26,4 @@ RUN \
 # Install required packages
 RUN \
     apt-get dist-upgrade -y
+CMD ["sh", "-c", "java $JAVA_OPTS -jar rocketmq-console-ng-1.0.0.jar"]

@@ -47,4 +47,4 @@ RUN \
 COPY --from=build /opt/rocketmq/rocketmq-externals/rocketmq-console/target/rocketmq-console-ng-1.0.0.jar /opt/rocketmq/
 WORKDIR /opt/rocketmq
 EXPOSE 8080
-CMD  ["sh" "-c" "java" "$JAVA_OPTS" "-jar" "rocketmq-console-ng-1.0.0.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -jar rocketmq-console-ng-1.0.0.jar"]
