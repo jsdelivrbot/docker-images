@@ -3,7 +3,7 @@
 #    -- automatically generated  --
 #+++++++++++++++++++++++++++++++++++++++
 
-FROM webdevops/php:7.1 AS build
+FROM webdevops/php:debian-8-php7 AS build
 MAINTAINER 若虚 <slpcat@qq.com>
 
 ENV \
@@ -50,7 +50,7 @@ RUN apt-get install -y automake bison flex gcc-4.8 g++-4.8 git libtool libssl-de
     #Build php-agent
     && cd pinpoint_php && Build.sh --always-make --enable-release
 
-FROM webdevops/php:7.1
+FROM webdevops/php:debian-8-php7
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -93,7 +93,7 @@ COPY conf/ /opt/docker/
 #COPY --from=build  /root/pinpoint-c-agent/pinpoint_php/modules/pinpoint.so /usr/lib64/php/modules/
 COPY --from=build  /root/pinpoint-c-agent/pinpoint_php/modules/pinpoint.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303/
 RUN echo 'extension=pinpoint.so' > /opt/docker/etc/php/conf.d/pinpoint.ini \
-    && echo 'pinpoint_agent.config_full_name=/etc/pinpoint_agent.conf' >> /etc/php.d/pinpoint.ini \
+    && echo 'pinpoint_agent.config_full_name=/etc/pinpoint_agent.conf' >> /etc/php.d/pinpoint.ini
 
 COPY --from=build  /root/pinpoint-c-agent/quickstart/config/pinpoint_agent.conf.example  /etc/pinpoint_agent.conf
 #install pinpoint plugins
