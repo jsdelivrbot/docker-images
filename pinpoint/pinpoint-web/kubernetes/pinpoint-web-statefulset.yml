@@ -54,8 +54,8 @@ spec:
           value: "zk-svc:2181"
         - name: ADMIN_PASSWORD
           value: "admin"
-        #- name: ANALYTICS
-        #  value: "2181"
+        - name: ANALYTICS
+          value: "false"
         - name: HBASE_HOST
           value: "hbase-zk"
         - name: HBASE_PORT
@@ -74,14 +74,14 @@ spec:
           value: "pinpoint"
         - name: DEBUG_LEVEL
           value: "INFO"
-        #- name: CONFIG_SHOW_APPLICATIONSTAT
-        #  value: "hbase"
+        #- name: SHOW_APPLICATIONSTAT
+        #  value: "true"
         - name: BATCH_ENABLE
           value: "false"
         - name: BATCH_SERVER_IP
           value: "batch"
         - name: BATCH_FLINK_SERVER
-          value: "flink"
+          value: "FLINK_MANGER_SERVER_IP_LIST"
         ports:
         - containerPort: 9997
           protocol: TCP
