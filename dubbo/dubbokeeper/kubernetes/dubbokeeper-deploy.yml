@@ -16,11 +16,7 @@ spec:
         app: dubbokeeper
     spec:
       containers:
-      - command:
-        - sh
-        - -c
-        - cd $TOMCAT_HOME/bin && ./startup.sh && while ( true ) ; do sleep 20s;done
-        image: slpcat/dubbokeeper:v1.0.0
+        image: slpcat/dubbokeeper:v1.0.1
         imagePullPolicy: Always
         name: dubbokeeper
         ports:
@@ -35,12 +31,12 @@ spec:
             cpu: 50m
             memory: 1Gi
         volumeMounts:
-        - mountPath: /workspace/service/apps/dubbokeeper/WEB-INF/classes/dubbo.properties
+        - mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/dubbo.properties
           name: configmap
           subPath: dubbo.properties
       dnsPolicy: ClusterFirst
-      imagePullSecrets:
-      - name: registrykey-ali-vpc
+      #imagePullSecrets:
+      #- name: registrykey-ali-vpc
       restartPolicy: Always
       terminationGracePeriodSeconds: 10
       volumes:
