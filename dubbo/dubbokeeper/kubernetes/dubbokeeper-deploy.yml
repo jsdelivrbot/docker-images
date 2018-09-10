@@ -49,7 +49,7 @@ spec:
             mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/dubbo.properties"
             subPath: "dubbo.properties"
       volumes:
-        - name: dubbokeeper
+        - name: dubbokeeper-conf
           configMap:
             name: dubbokeeper
             #Add ConfigMap data to a specific path in the Volume
