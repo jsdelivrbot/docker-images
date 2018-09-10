@@ -36,11 +36,14 @@ RUN \
     mvn -Dmaven.test.skip=true clean package install -P mysql assembly:assembly -U
 
 FROM slpcat/tomcat8:alpine-8.5
+MAINTAINER 若虚 <slpcat@qq.com>
+
 COPY --from=build /dubbokeeper/target/mysql-dubbokeeper-ui/dubbokeeper-ui-1.0.1.war /dubbokeeper-ui-1.0.1.war
 RUN \
     rm -rf /usr/local/tomcat/webapps \
     && mkdir -p /usr/local/tomcat/webapps/ROOT \
     && unzip /dubbokeeper-ui-1.0.1.war -d /usr/local/tomcat/webapps/ROOT \
+    && sed -i s/DEBUG/INFO/ /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/logback.xml \
     && rm /dubbokeeper-ui-1.0.1.war
 
 EXPOSE 8080
