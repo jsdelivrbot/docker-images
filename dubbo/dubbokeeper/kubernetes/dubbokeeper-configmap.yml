@@ -22,5 +22,5 @@ data:
     auth.key=g2eeOzk=lavj1Hqx
 kind: ConfigMap
 metadata:
-  name: dubbomonitor
+  name: dubbokeeper
   namespace: default
