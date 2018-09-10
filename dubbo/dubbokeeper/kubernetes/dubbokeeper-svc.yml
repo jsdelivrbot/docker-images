@@ -11,5 +11,4 @@ spec:
     targetPort: 8080
   selector:
     app: dubbokeeper
-  sessionAffinity: None
-  type: LoadBalancer
+  type: NodePort
