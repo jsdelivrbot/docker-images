@@ -1,4 +1,4 @@
-FROM webdevops/php:ubuntu-16.04
+FROM webdevops/php-nginx:ubuntu-16.04
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -33,7 +33,7 @@ ENV WEB_DOCUMENT_ROOT=/app \
     WEB_PHP_SOCKET=""
 ENV WEB_PHP_SOCKET=127.0.0.1:9000
 
-COPY conf/ /opt/docker/
+COPY conf/* /opt/docker/
 
 RUN git clone https://github.com/naver/pinpoint-c-agent.git
 
@@ -50,13 +50,21 @@ ENV AGENT_ID="k8s-php" \
 
 #install pinpoint php module
 #COPY --from=build  /root/pinpoint-c-agent/pinpoint_php/modules/pinpoint.so /usr/lib64/php/modules/
+COPY 10-pinpoint.sh /opt/docker/provision/entrypoint.d/
 COPY pinpoint-ubuntu16.04-php-7.0.30.so /usr/lib/php/20151012/pinpoint.so
-RUN echo 'extension=pinpoint.so' > /opt/docker/etc/php/conf.d/pinpoint.ini \
-    && echo 'pinpoint_agent.config_full_name=/etc/pinpoint_agent.conf' >> /opt/docker/etc/php/conf.d/pinpoint.ini
+COPY lib.tgz /lib.tgz
+RUN tar -zxf /lib.tgz -C /usr/lib && rm /lib.tgz
+RUN echo 'extension=pinpoint.so' > /etc/php/7.0/mods-available/pinpoint.ini \
+    && echo 'pinpoint_agent.config_full_name=/etc/pinpoint_agent.conf' >> /etc/php/7.0/mods-available/pinpoint.ini \
+    && ln -s /etc/php/7.0/mods-available/pinpoint.ini /etc/php/7.0/fpm/conf.d/pinpoint.ini \
+    && ln -s /etc/php/7.0/mods-available/pinpoint.ini /etc/php/7.0/cli/conf.d/pinpoint.ini
 
 RUN cp /pinpoint-c-agent/quickstart/config/pinpoint_agent.conf.example  /etc/pinpoint_agent.conf
 #install pinpoint plugins
 RUN mkdir -p /app/pinpoint_plugins && cp /pinpoint-c-agent/quickstart/php/web/plugins/* /app/pinpoint_plugins
+#patch
+RUN wget https://raw.githubusercontent.com/naver/pinpoint-c-agent/master/quickstart/php/web/plugins/curl_plugin.php \
+    && mv curl_plugin.php /app/pinpoint_plugins/
 #copy sample website source code
 RUN cp /pinpoint-c-agent/quickstart/php/web/*.php /app
 
