@@ -3,7 +3,7 @@ MAINTAINER 若虚 <slpcat@qq.com>
 
 ARG PINPOINT_VERSION=${PINPOINT_VERSION:-1.7.3}
 
-RUN apk add git
+RUN apk add git libstdc++ nodejs npm nodejs-dev 
 
 # install from source
 RUN \
@@ -14,7 +14,8 @@ RUN \
     git checkout $PINPOINT_VERSION \
     #patch APPLICATION_NAME_MAX_LEN=128 AGENT_NAME_MAX_LEN=128
     && sed -i s/24/128/ commons/src/main/java/com/navercorp/pinpoint/common/PinpointConstants.java \
-    && ./mvnw package install -Prelease -DskipTests=true
+    #&& ./mvnw package install -Prelease -DskipTests=true
+    && mvn package install -Dmaven.test.skip=true -Prelease
 
 FROM slpcat/tomcat8:alpine-8.5
 MAINTAINER 若虚 <slpcat@qq.com>
