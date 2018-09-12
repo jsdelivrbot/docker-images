@@ -34,7 +34,7 @@ RUN set -ex \
 # Here we install GNU libc (aka glibc) and set en_US.UTF-8 locale as default.
 
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
-    ALPINE_GLIBC_PACKAGE_VERSION="2.27-r0" && \
+    ALPINE_GLIBC_PACKAGE_VERSION="2.28-r0" && \
     ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
     ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
     ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
@@ -64,18 +64,38 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
         "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
         "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
 
+#install JDK 1.6.45
+ENV JAVA_6_HOME=/usr/lib/jvm/java-6-oracle
+
+COPY jdk-6u45-linux-x64.bin /tmp
+RUN \
+    cd /tmp \
+    && bash jdk-6u45-linux-x64.bin \
+    && mkdir -p /usr/lib/jvm \
+    && mv jdk1.6.0_45 $JAVA_6_HOME
+
+#install JDK 1.7.80
+ENV JAVA_7_HOME=/usr/lib/jvm/java-7-oracle
+
+COPY jdk-7u80-linux-x64.tar.gz /tmp
+RUN \
+    cd /tmp \
+    && tar -xzf jdk-7u80-linux-x64.tar.gz \
+    && mv jdk1.7.0_80 $JAVA_7_HOME
+
+#install JDK 1.8.181
 ENV JAVA_VERSION=8 \
     JAVA_UPDATE=181 \
     JAVA_BUILD=13 \
     JAVA_PATH=96a7b8442fe848ef90c96a2fad6ed6d1 \
-    JAVA_HOME="/usr/lib/jvm/default-jvm"
+    JAVA_HOME="/usr/lib/jvm/default-jvm" \
+    JAVA_8_HOME=/usr/lib/jvm/java-8-oracle
 
 RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates unzip && \
     cd "/tmp" && \
     wget --header "Cookie: oraclelicense=accept-securebackup-cookie;" \
         "http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/${JAVA_PATH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" && \
     tar -xzf "jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" && \
-    mkdir -p "/usr/lib/jvm" && \
     mv "/tmp/jdk1.${JAVA_VERSION}.0_${JAVA_UPDATE}" "/usr/lib/jvm/java-${JAVA_VERSION}-oracle" && \
     ln -s "java-${JAVA_VERSION}-oracle" "$JAVA_HOME" && \
     ln -s "$JAVA_HOME/bin/"* "/usr/bin/" && \
