@@ -14,7 +14,7 @@ RUN \
     git checkout $PINPOINT_VERSION \
     #patch APPLICATION_NAME_MAX_LEN=128 AGENT_NAME_MAX_LEN=128
     && sed -i s/24/128/ commons/src/main/java/com/navercorp/pinpoint/common/PinpointConstants.java \
-    && ./mvnw install -Prelease -DskipTests=true
+    && ./mvnw package install -Prelease -DskipTests=true
 
 FROM slpcat/tomcat8:alpine-8.5
 MAINTAINER 若虚 <slpcat@qq.com>
