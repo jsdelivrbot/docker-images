@@ -12,8 +12,8 @@ RUN \
 WORKDIR /pinpoint
 RUN \
     git checkout $PINPOINT_VERSION \
-    #patch APPLICATION_NAME_MAX_LEN=128 AGENT_NAME_MAX_LEN=128
-    && sed -i s/24/128/ commons/src/main/java/com/navercorp/pinpoint/common/PinpointConstants.java \
+    #patch APPLICATION_NAME_MAX_LEN=64 AGENT_NAME_MAX_LEN=64
+    && sed -i s/24/64/ commons/src/main/java/com/navercorp/pinpoint/common/PinpointConstants.java \
     #&& ./mvnw package install -Prelease -DskipTests=true
     && mvn package install -Dmaven.test.skip=true -Prelease
 
