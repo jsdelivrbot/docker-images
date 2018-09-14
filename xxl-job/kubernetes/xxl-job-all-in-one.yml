@@ -1,54 +1,98 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+      app: xxl-job
+  name: xxl-job
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: web
+  type: NodePort
+  selector:
+    app: xxl-job
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xxl-job
+  namespace: default
+data:
+  xxl-job-admin.properties: |-
+    ### xxl-job db  (use &amp; replace & in xml)
+    xxl.job.db.driverClass=com.mysql.jdbc.Driver
+    xxl.job.db.url=jdbc:mysql://mysql-host:3306/job_cluster?useUnicode=true&characterEncoding=UTF-8
+    xxl.job.db.user=dbuser
+    xxl.job.db.password=password
+
+    ### xxl-job email
+    xxl.job.mail.host=smtp.163.com
+    xxl.job.mail.port=25
+    xxl.job.mail.username=mail@163.com
+    xxl.job.mail.password=uwin89765WU
+    xxl.job.mail.sendNick=任务调度平台XXL-JOB
+
+    ### xxl-job login
+    xxl.job.login.username=admin
+    xxl.job.login.password=123456
+
+    ### xxl-job, access token
+    xxl.job.accessToken=
+
+    ### xxl-job, i18n (default empty as chinese, "en" as english)
+    xxl.job.i18n=
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app: jenkins
-  name: jenkins
+    app: xxl-job
+  name: xxl-job
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jenkins
-  serviceName: jenkins
+      app: xxl-job
+  serviceName: xxl-job
   template:
     metadata:
       labels:
-        app: jenkins
-      name: jenkins
+        app: xxl-job
+      name: xxl-job
       annotations:
         #disable istio sidecar injection
-        sidecar.istio.io/inject: "false"
+        #sidecar.istio.io/inject: "false"
         #net.ipv4.tcp_syncookies=0 need kernel version 4.4 or newer
         security.alpha.kubernetes.io/sysctls: "net.ipv4.tcp_syncookies=0,net.ipv4.ip_local_port_range=10000 65535"
         #kernel version 4.15 needed
         security.alpha.kubernetes.io/unsafe-sysctls: "net.core.somaxconn=65535,net.ipv4.tcp_tw_reuse=1,net.ipv4.tcp_fin_timeout=30,net.ipv4.tcp_keepalive_intvl=4,net.ipv4.tcp_keepalive_probes=3,net.ipv4.tcp_keepalive_time=120,net.ipv4.tcp_max_syn_backlog=65535,net.ipv4.tcp_rfc1337=1,net.ipv4.tcp_slow_start_after_idle=0,net.ipv4.tcp_fack=1,net.ipv4.tcp_max_tw_buckets=262144,net.ipv4.tcp_fastopen=3,net.ipv4.icmp_ratelimit=100,net.ipv4.tcp_abort_on_overflow=1,net.ipv4.tcp_adv_win_scale=2,net.ipv4.tcp_retries2=8,net.ipv4.tcp_syn_retries=3,net.ipv4.tcp_synack_retries=2,net.unix.max_dgram_qlen=512,net.ipv4.tcp_fwmark_accept=1,net.ipv4.fwmark_reflect=1,net.ipv4.tcp_no_metrics_save=1,net.netfilter.nf_conntrack_helper=1,net.netfilter.nf_conntrack_max=1048576,net.netfilter.nf_conntrack_tcp_timeout_close_wait=60,net.netfilter.nf_conntrack_tcp_timeout_established=120,net.netfilter.nf_conntrack_tcp_timeout_fin_wait=30,net.netfilter.nf_conntrack_tcp_timeout_last_ack=30,net.netfilter.nf_conntrack_tcp_timeout_time_wait=60"
     spec:
       containers:
-      - image: slpcat/kube-jenkins-service
+      - image: slpcat/xxl-job
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /login
+            path: /toLogin
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 60
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
-        name: jenkins
+        name: xxl-job
         ports:
         - containerPort: 8080
           name: web
           protocol: TCP
-        - containerPort: 50000
-          name: agent
-          protocol: TCP
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /login
+            path: /toLogin
             port: 8080
             scheme: HTTP
           initialDelaySeconds: 60
@@ -62,25 +106,18 @@ spec:
           requests:
             cpu: 500m
             memory: 512Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /var/jenkins_home
-          name: jenkinshome
+          - name: xxl-job-conf
+            mountPath: "/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/xxl-job-admin.properties"
+            subPath: "xxl-job-admin.properties"
       #imagePullSecrets:
       #- name: myregistrykey
       restartPolicy: Always
-      securityContext:
-        fsGroup: 1000
-      serviceAccount: jenkins
-  volumeClaimTemplates:
-  - metadata:
-      name: jenkinshome
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      #ceph rbd storageclass
-      #storageClassName: rbd
-      resources:
-        requests:
-          storage: 60Gi
+      volumes:
+        - name: xxl-job-conf
+          configMap:
+            name: xxl-job
+            #Add ConfigMap data to a specific path in the Volume
+            items:
+            - key: xxl-job-admin.properties
+              path: xxl-job-admin.properties
