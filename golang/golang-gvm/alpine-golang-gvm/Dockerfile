@@ -33,14 +33,10 @@ RUN set -ex \
     && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
 
 #install gvm
-RUN apk add git binutils bison gcc make go musl-dev openssl
+COPY go_install.sh /go_install.sh
+RUN apk add git mercurial binutils bison gcc make go musl-dev openssl
 RUN \
     curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer|bash \
-    && source /root/.gvm/scripts/gvm \
-    && gvm install go1.8 \
-    && gvm install go1.9 \
-    && gvm install go1.10 \
-    && gvm install go1.11 \
-    && gvm go1.10 --default
+    && /go_install.sh
 
 CMD ["/bin/bash"]
