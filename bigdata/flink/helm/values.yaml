@@ -1,0 +1,35 @@
+image: flink
+imageTag: 1.5.3-hadoop27-scala_2.11-alpine
+imagePullPolicy: Always
+
+resources:
+  jobmanager:
+    limits:
+      cpu: 1000m
+      memory: 1280Mi
+    requests:
+      cpu: 1000m
+      memory: 1280Mi
+  taskmanager:
+    limits:
+      cpu: 4
+      memory: 1280Mi
+    requests:
+      cpu: 1000m
+      memory: 1280Mi
+
+flink:
+  jobmanager_heap_mb: 1024
+  taskmanager_heap_mb: 1024
+  num_taskmanagers: 3
+  num_slots_per_taskmanager: 4
+
+  ## Other config options for flink-conf.yaml
+  config: |
+    zookeeper_quorum: flink-zk-zookeeper:2181
+
+hadoop:
+  core-site.xml: |
+    <?xml version="1.0"?>
+    <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+    <configuration/>

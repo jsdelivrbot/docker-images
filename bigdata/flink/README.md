@@ -1,72 +1,45 @@
-# Flink docker
+Flink Docker Examples
+=====================
 
-Apache Flink docker images to:
-* Setup a standalone [Apache Flink](http://flink.apache.org/) cluster running one Flink Master and multiple Flink workers
-* Build Flink applications in Scala, Java or Python to run on a Flink cluster
+**NOTE**: These resources are in a draft state, and should be used for reference only.
 
-Currently supported versions:
-* Flink 1.5.0 for Hadoop 2.8 and Scala 2.11
-* Flink 1.5.0 for Hadoop 2.7 and Scala 2.11
-* Flink 1.4.2 for Hadoop 2.8 and Scala 2.11
-* Flink 1.4.2 for Hadoop 2.7 and Scala 2.11
-* Flink 1.4.1 for Hadoop 2.8 and Scala 2.11
-* Flink 1.4.1 for Hadoop 2.7 and Scala 2.11
-* Flink 1.4.0 for Hadoop 2.8 and Scala 2.11
-* Flink 1.4.0 for Hadoop 2.7 and Scala 2.11
-* Flink 1.3.2 for Hadoop 2.7 and Scala 2.11
-* Flink 1.3.1 for Hadoop 2.7 and Scala 2.11
-* Flink 1.3.0 for Hadoop 2.7 and Scala 2.11
-* Flink 1.2.1 for Hadoop 2.7 and Scala 2.11
-* Flink 1.2.0 for Hadoop 2.7 and Scala 2.11
-* Flink 1.1.4 for Hadoop 2.7 and Scala 2.11
-* Flink 1.1.3 for Hadoop 2.7 and Scala 2.11
-* Flink 0.10.2 for Hadoop 2.7 and Scala 2.11
-* Flink 0.10.1 for Hadoop 2.7 and Scala 2.11
+Examples for how to use the Flink Docker images in a variety of ways.
 
-## Using Docker Compose
+Docker Compose
+--------------
 
-Add the following services to your `docker-compose.yml` to integrate a Flink master and Flink worker in [your BDE pipeline](https://github.com/big-data-europe/app-bde-pipeline):
-```
-flink-master:
-   image: bde2020/flink-master:1.5.0-hadoop2.8
-   hostname: flink-master
-   container_name: flink-master
-   environment:
-      - INIT_DAEMON_STEP=setup_flink
-#     - "constraint:node==<yourmasternode>"
+Use the [Docker Compose config](docker-compose.yml) in this repo to create a local Flink cluster.
 
-   ports:
-     - "8080:8080"
-     - "8081:8081"
+See the [docs](https://ci.apache.org/projects/flink/flink-docs-release-1.2/setup/docker.html) for
+information on its usage.
 
- flink-worker:
-   image: bde2020/flink-worker:1.5.0-hadoop2.8
-   hostname: flink-worker
-   container_name: flink-worker
-   environment:
-     - FLINK_MASTER_PORT_6123_TCP_ADDR=flink-master
-#    - FLINK_NUM_TASK_SLOTS=2
-#    - "constraint:node==<yourworkernode>"
-   depends_on:
-      - "flink-master"
+Flink Helm Chart
+----------------
 
-```
+Build the Helm archive:
 
-## Running Docker containers without the init daemon
+    $ helm package helm/flink/
 
-    docker network create flink-net
+Deploy a non-HA Flink cluster with a single taskmanager:
 
-## Flink Master
-To start a Flink master:
+    $ helm install --name my-cluster flink*.tgz
 
-    docker run --name flink-master --net flink-net -e ENABLE_INIT_DAEMON=false -d bde2020/flink-master:1.5.0-hadoop2.8
+Deploy a non-HA Flink cluster with three taskmanagers:
 
-## Flink Worker
-To start a Flink worker:
+    $ helm install --name my-cluster --set flink.num_taskmanagers=3 flink*.tgz
 
-    docker run --name flink-worker --net flink-net -e ENABLE_INIT_DAEMON=false -e FLINK_MASTER_PORT_6123_TCP_ADDR=flink-master -d bde2020/flink-worker:1.5.0-hadoop2.8
+Deploy an HA Flink cluster with three taskmanagers:
 
-## Launch a Flink application
-Building and running your Flink application on top of the Flink cluster is as simple as extending a template Docker image. Check the template's README for further documentation.
-* [Maven template](https://github.com/big-data-europe/docker-flink/tree/master/template/maven)
-* [Sbt template](https://github.com/big-data-europe/docker-flink/tree/master/template/sbt)
+    $ cat > values.yaml <<EOF
+    flink:
+      num_taskmanagers: 3
+      config: |
+        zookeeper_quorum: <zookeeper quorum string>
+        state_s3_bucket: <s3 bucket>
+        aws_access_key_id: <aws access key>
+        aws_secret_access_key: <aws secret key>
+    EOF
+
+    $ helm install --name my-cluster --values values.yaml flink*.tgz
+
+Note that the AWS access keys may not be required if you use a role (recommended). Anything under "config: |" will be added to the Flink config file. It's not limited to HA settings.
