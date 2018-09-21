@@ -3,7 +3,7 @@ FROM slpcat/golang-gvm AS builder
 MAINTAINER 若虚 <slpcat@qq.com>
 
 #get source code
-COPY main.go /main.go
+RUN git clone https://github.com/kubernetes-incubator/external-storage.git
 COPY go_build.sh /go_build.sh
 RUN /go_build.sh
 
