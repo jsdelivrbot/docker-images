@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tomcat8
-  namespace: default
+  name: beego-example
+  namespace:default
 spec:
   ports:
   - name: http
@@ -11,4 +11,4 @@ spec:
     targetPort: 8080
   type: NodePort
   selector:
-    app: tomcat8
+    app: beego-example
