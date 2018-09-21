@@ -6,6 +6,7 @@ export GOOS=linux
 go get github.com/golang/glog
 go get github.com/kubernetes-incubator/external-storage/ceph/rbd/pkg/provision
 go get github.com/kubernetes-incubator/external-storage/lib/controller
+go get github.com/kubernetes-incubator/external-storage/vendor
 go get k8s.io/apimachinery/pkg/util/wait
 go get k8s.io/client-go/kubernetes
 go get k8s.io/client-go/rest
