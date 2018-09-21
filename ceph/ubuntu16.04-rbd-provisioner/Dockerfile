@@ -1,18 +1,12 @@
-# Copyright 2017 The Kubernetes Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 #upstream https://github.com/kubernetes-incubator/external-storage/blob/master/ceph/rbd/Dockerfile
+FROM slpcat/golang-gvm AS builder
+MAINTAINER 若虚 <slpcat@qq.com>
+
+#get source code
+COPY main.go /main.go
+COPY go_build.sh /go_build.sh
+RUN /go_build.sh
+
 FROM ubuntu:16.04
 MAINTAINER 若虚 <slpcat@qq.com>
 
@@ -54,5 +48,5 @@ RUN \
     && apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y ceph-common
 
-COPY rbd-provisioner /usr/local/bin/rbd-provisioner
+COPY --from=builder /rbd-provisioner /usr/local/bin/rbd-provisioner
 ENTRYPOINT ["/usr/local/bin/rbd-provisioner"]
