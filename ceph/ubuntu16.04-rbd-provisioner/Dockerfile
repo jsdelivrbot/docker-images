@@ -4,6 +4,7 @@ MAINTAINER 若虚 <slpcat@qq.com>
 
 #get source code
 RUN git clone https://github.com/kubernetes-incubator/external-storage.git \
+    && cd external-storage \
     && git checkout rbd-provisioner-v1.1.0-k8s1.10
 COPY go_build.sh /go_build.sh
 RUN /go_build.sh
