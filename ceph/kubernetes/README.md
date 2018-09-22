@@ -250,6 +250,17 @@ kubectl create -f cephfs-pv-claim.yaml
         requests:
           storage: 10Gi
 
+ceph开启内置dashboard
+http://docs.ceph.com/docs/master/mgr/dashboard/
+开启dashboard 功能
+ceph mgr module enable dashboard
+创建证书
+ceph dashboard create-self-signed-cert
+创建 web 登录用户密码
+ceph dashboard set-login-credentials user-name password
+查看服务访问方式
+ceph mgr services
+
 ceph存储节点扩容操作
 新的节点打上临时标签
 kubectl label node <nodename> ceph-new=true

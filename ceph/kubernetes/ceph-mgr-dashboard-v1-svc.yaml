@@ -9,9 +9,10 @@ metadata:
     daemon: mgr
 spec:
   ports:
-  - port: 7000
+  - port: 443
     protocol: TCP
-    targetPort: 7000
+    targetPort: 8443
   selector:
     app: ceph
     daemon: mgr
+  type: NodePort
