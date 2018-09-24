@@ -139,3 +139,10 @@ RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates unzip &
     rm "${JAVA_HOME}/jre/lib/security/README.txt" && \
     apk del build-dependencies && \
     rm "/tmp/"*
+#install JDK 9
+#install JDK 10
+#http://download.oracle.com/otn-pub/java/jdk/10.0.2+13/19aef61b38124481863b1413dce1855f/jdk-10.0.2_linux-x64_bin.tar.gz
+#install JDK 11
+#https://download.java.net/java/early_access/jdk11/28/BCL/jdk-11+28_linux-x64_bin.tar.gz
+#install JDK 12
+#https://download.java.net/java/early_access/jdk12/12/GPL/openjdk-12-ea+12_linux-x64_bin.tar.gz

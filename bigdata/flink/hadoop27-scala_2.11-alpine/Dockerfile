@@ -16,13 +16,13 @@
 # limitations under the License.
 ###############################################################################
 
-FROM openjdk:8-jre-alpine
+FROM slpcat/jdk:alpine
 
 # Install dependencies, bash and su-exec for easy step-down from root
-RUN apk add --no-cache bash libc6-compat snappy 'su-exec>=0.2'
+RUN apk add --no-cache bash snappy 'su-exec>=0.2'
 
 # Configure Flink version
-ENV FLINK_VERSION=1.5.3 \
+ENV FLINK_VERSION=1.3.3 \
     HADOOP_SCALA_VARIANT=hadoop27-scala_2.11
 
 # Prepare environment
@@ -34,8 +34,8 @@ WORKDIR $FLINK_HOME
 
 ENV FLINK_URL_FILE_PATH=flink/flink-${FLINK_VERSION}/flink-${FLINK_VERSION}-bin-${HADOOP_SCALA_VARIANT}.tgz
 # Not all mirrors have the .asc files
-ENV FLINK_TGZ_URL=https://www.apache.org/dyn/closer.cgi?action=download&filename=${FLINK_URL_FILE_PATH} \
-    FLINK_ASC_URL=https://www.apache.org/dist/${FLINK_URL_FILE_PATH}.asc
+ENV FLINK_TGZ_URL=https://archive.apache.org/dist/${FLINK_URL_FILE_PATH} \
+    FLINK_ASC_URL=https://archive.apache.org/dist/${FLINK_URL_FILE_PATH}.asc
 
 # For GPG verification instead of relying on key servers
 COPY KEYS /KEYS
