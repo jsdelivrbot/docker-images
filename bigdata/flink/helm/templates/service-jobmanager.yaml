@@ -3,13 +3,13 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-jobmanager
 spec:
+  clusterIP: None
   ports:
   - name: rpc
     port: 6123
   - name: blob
     port: 6124
-  - name: ui
-    port: 8081
   selector:
     app: {{ template "fullname" . }}
     component: jobmanager
+  type: ClusterIP

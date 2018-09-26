@@ -9,8 +9,8 @@ data:
     blob.server.port: 6124
     jobmanager.rpc.address: {{ template "fullname" . }}-jobmanager
     jobmanager.rpc.port: 6123
-    jobmanager.heap.mb: {{ .Values.flink.jobmanager_heap_mb }}
-    taskmanager.heap.mb: {{ .Values.flink.taskmanager_heap_mb }}
+    #jobmanager.heap.mb: {{ .Values.flink.jobmanager_heap_mb }}
+    #taskmanager.heap.mb: {{ .Values.flink.taskmanager_heap_mb }}
     taskmanager.numberOfTaskSlots: {{ .Values.flink.num_slots_per_taskmanager }}
     {{- if .Values.flink.config }}
 {{ .Values.flink.config | indent 4 }}

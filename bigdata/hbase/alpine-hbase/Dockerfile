@@ -176,7 +176,7 @@ RUN set -x \
     && rm /tmp/hadoop.tar.gz*
 
 RUN mkdir -p ${HBASE_INSTALL_DIR} && \
-    curl -L http://mirrors.aliyun.com/apache/hbase//${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz | tar -xz --strip=1 -C ${HBASE_INSTALL_DIR}
+    curl -L http://archive.apache.org/dist/hbase/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz | tar -xz --strip=1 -C ${HBASE_INSTALL_DIR}
 
 ADD hbase-site.xml /opt/hbase/conf/hbase-site.xml
 ADD hbase-env.sh /opt/hbase/conf/hbase-env.sh
