@@ -30,7 +30,7 @@ spec:
       #- name: registrykey-ali-ext
       containers:
       - name: qconf
-        image: slpcat/qconf:ubuntu16.04
+        image: slpcat/qconf:alpine
         imagePullPolicy: Always
         resources:
           # keep request = limit to keep this container in guaranteed class
