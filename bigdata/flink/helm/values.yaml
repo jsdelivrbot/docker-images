@@ -4,17 +4,17 @@ imagePullPolicy: Always
 
 resources:
   jobmanager:
+    requests:
+      cpu: 500m
+      memory: 512Mi
     limits:
       cpu: 1000m
-      memory: 1280Mi
-    requests:
-      cpu: 1000m
-      memory: 1280Mi
+      memory: 1024Mi
   taskmanager:
-    limits:
-      memory: 1280Mi
     requests:
-      memory: 1280Mi
+      memory: 512Mi
+    limits:
+      memory: 1024Mi
 
 flink:
   #jobmanager_heap_mb: 1024
