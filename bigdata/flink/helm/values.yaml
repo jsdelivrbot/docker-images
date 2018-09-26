@@ -9,12 +9,12 @@ resources:
       memory: 512Mi
     limits:
       cpu: 1000m
-      memory: 1024Mi
+      memory: 2048Mi
   taskmanager:
     requests:
       memory: 512Mi
     limits:
-      memory: 1024Mi
+      memory: 2048Mi
 
 flink:
   #jobmanager_heap_mb: 1024
@@ -24,7 +24,7 @@ flink:
 
   ## Other config options for flink-conf.yaml
   config: |
-    env.java.opts: "-server -Djava.awt.headless=true -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider -Xverify:none -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:ReservedCodeCacheSize=240M -XX:MaxRAMFraction=1 -XshowSettings:vm -XX:+AggressiveOpts -XX:-UseBiasedLocking -XX:+UseFastAccessorMethods -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:SoftRefLRUPolicyMSPerMB=0 -XX:G1ReservePercent=25 -XX:G1NewSizePercent=10 -XX:G1MaxNewSizePercent=25 -XX:MaxGCPauseMillis=20 -XX:-OmitStackTraceInFastThrow -XX:+ParallelRefProcEnabled -XX:ParallelGCThreads=8 -XX:MaxTenuringThreshold=1 -XX:G1HeapWastePercent=10 -XX:SurvivorRatio=8 -XX:G1MixedGCCountTarget=16 -XX:G1MixedGCLiveThresholdPercent=90 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=32m -XX:+PerfDisableSharedMem -XX:-ResizePLAB"
+    env.java.opts: "-server -Djava.awt.headless=true -Djava.nio.channels.spi.SelectorProvider=sun.nio.ch.EPollSelectorProvider -Xverify:none -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:ReservedCodeCacheSize=240M -XX:MaxRAMFraction=2 -XshowSettings:vm -XX:+AggressiveOpts -XX:-UseBiasedLocking -XX:+UseFastAccessorMethods -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:+UseG1GC -XX:+ExplicitGCInvokesConcurrent -XX:SoftRefLRUPolicyMSPerMB=0 -XX:G1ReservePercent=25 -XX:G1NewSizePercent=10 -XX:G1MaxNewSizePercent=25 -XX:MaxGCPauseMillis=20 -XX:-OmitStackTraceInFastThrow -XX:+ParallelRefProcEnabled -XX:ParallelGCThreads=8 -XX:MaxTenuringThreshold=1 -XX:G1HeapWastePercent=10 -XX:SurvivorRatio=8 -XX:G1MixedGCCountTarget=16 -XX:G1MixedGCLiveThresholdPercent=90 -XX:InitiatingHeapOccupancyPercent=35 -XX:G1HeapRegionSize=32m -XX:+PerfDisableSharedMem -XX:-ResizePLAB"
     high-availability: zookeeper
     high-availability.zookeeper.quorum: flink-zk-zookeeper-headless:2181
     high-availability.zookeeper.path.root: /flink
