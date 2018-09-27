@@ -1,5 +1,4 @@
-#upstream https://github.com/frol/docker-alpine-oraclejdk8
-FROM alpine:3.8
+FROM centos:7
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -7,62 +6,16 @@ ENV \
     TERM="xterm" \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8" \
-    LC_ALL="en_US.UTF-8" \
     TIMEZONE="Asia/Shanghai"
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
+COPY epel.repo /etc/yum.repos.d/
 
-# Set timezone and locales
-RUN set -ex \
-    && apk update \
-    && apk upgrade \
-    && apk add \
-           bash \
-           tzdata \
-           vim \
-           tini \
-           su-exec \
-           gzip \
-           tar \
-           wget \
-           curl \
-    && echo "${TIMEZONE}" > /etc/TZ \
-    && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
-    # Network fix
-    && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
+# set timezone
+RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 
-# Here we install GNU libc (aka glibc) and set en_US.UTF-8 locale as default.
-
-RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
-    ALPINE_GLIBC_PACKAGE_VERSION="2.28-r0" && \
-    ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
-    wget \
-        "https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub" \
-        -O "/etc/apk/keys/sgerrand.rsa.pub" && \
-    wget \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
-    apk add --no-cache \
-        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
-    \
-    rm "/etc/apk/keys/sgerrand.rsa.pub" && \
-    /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true && \
-    echo "export LANG=$LANG" > /etc/profile.d/locale.sh && \
-    \
-    apk del glibc-i18n && \
-    \
-    rm "/root/.wget-hsts" && \
-    apk del .build-dependencies && \
-    rm \
-        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+RUN \
+    yum update -y && \
+    yum install -y wget unzip
 
 #install JDK 1.6.45
 ENV JAVA_6_HOME=/usr/lib/jvm/java-6-oracle
@@ -91,7 +44,7 @@ ENV JAVA_VERSION=8 \
     JAVA_HOME="/usr/lib/jvm/default-jvm" \
     JAVA_8_HOME=/usr/lib/jvm/java-8-oracle
 
-RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates unzip && \
+RUN \
     cd "/tmp" && \
     wget --header "Cookie: oraclelicense=accept-securebackup-cookie;" \
         "http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/${JAVA_PATH}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz" && \
@@ -137,7 +90,6 @@ RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates unzip &
         "http://download.oracle.com/otn-pub/java/jce/${JAVA_VERSION}/jce_policy-${JAVA_VERSION}.zip" && \
     unzip -jo -d "${JAVA_HOME}/jre/lib/security" "jce_policy-${JAVA_VERSION}.zip" && \
     rm "${JAVA_HOME}/jre/lib/security/README.txt" && \
-    apk del build-dependencies && \
     rm "/tmp/"*
 
 #install JDK 9 non-LTS
