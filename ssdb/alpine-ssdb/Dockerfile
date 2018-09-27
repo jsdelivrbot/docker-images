@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.8 AS builder
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -32,6 +32,7 @@ RUN set -ex \
     && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
 
 ARG VERSION=${VERSION:-master}
+ARG CXX="g++ -static"
 
 RUN apk add --no-cache --virtual .build-deps \
       curl gcc g++ make autoconf libc-dev libevent-dev linux-headers perl tar \
@@ -53,6 +54,33 @@ RUN apk add --no-cache --virtual .build-deps \
     && apk add --virtual .rundeps libstdc++ \
     && apk del .build-deps
 
+FROM alpine:3.8
+MAINTAINER 若虚 <slpcat@qq.com>
+
+# Container variables
+ENV \
+    TERM="xterm" \
+    LANG="en_US.UTF-8" \
+    LANGUAGE="en_US.UTF-8" \
+    LC_ALL="en_US.UTF-8" \
+    TIMEZONE="Asia/Shanghai"
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
+
+# Set timezone and locales
+RUN set -ex \
+    && apk update \
+    && apk upgrade \
+    && apk add \
+           bash \
+           tzdata \
+           vim \
+    && echo "${TIMEZONE}" > /etc/TZ \
+    && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
+    # Network fix
+    && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
+
+COPY --from=builder /ssdb /ssdb
 EXPOSE 8888
 VOLUME /ssdb/var
 
