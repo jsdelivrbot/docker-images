@@ -1,0 +1,3 @@
+1.基础镜像centos7，包括ceph-daemon，cephfs-provisioner，rbd-provisioner
+2.mimic ceph-volume，使用tcmalloc/jemalloc
+3.启用dpdk，spdk，rdma以及宿主机相关
