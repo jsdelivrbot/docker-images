@@ -2,14 +2,15 @@ replicaCount: 1
 revisionHistoryLimit: 3
 
 image:
-  repository: lmenezes/cerebro
+  #repository: lmenezes/cerebro
+  repository: slpcat/cerebro
   # Note: when updating the version, ensure `config` and the ConfigMap are kept
   # in sync with the default configuration of the upstream image
   tag: 0.8.1
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
   annotations: {}
   labels: {}
