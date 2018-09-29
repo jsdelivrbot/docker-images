@@ -67,7 +67,7 @@ client:
 # master and data roles.
 data:
   # This count will depend on your data and computation needs.
-  replicas: 2
+  replicas: 3
   antiAffinity: "soft"
 
   # The amount of RAM allocated to the JVM heap. This should be set to the
