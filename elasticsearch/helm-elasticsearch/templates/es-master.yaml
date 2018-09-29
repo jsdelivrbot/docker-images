@@ -105,10 +105,11 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: storage
-      annotations:
-        volume.beta.kubernetes.io/storage-class: {{ .Values.common.stateful.class }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.common.stateful.class }}
+      storageClassName: {{ .Values.common.stateful.class | quote }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.master.stateful.size }}
