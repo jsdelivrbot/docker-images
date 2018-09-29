@@ -1,9 +1,9 @@
-FROM  slpcat/maven:alpine-all AS build
+FROM  slpcat/maven:centos7-all AS builder
 MAINTAINER 若虚 <slpcat@qq.com>
 
-ARG PINPOINT_VERSION=${PINPOINT_VERSION:-1.7.3}
+ARG PINPOINT_VERSION=${PINPOINT_VERSION:-1.8.0}
 
-RUN apk add git libstdc++ nodejs npm nodejs-dev 
+RUN yum update -y && yum install -y  git libstdc++ nodejs npm nodejs-devel 
 
 # install from source
 RUN \
@@ -20,13 +20,13 @@ RUN \
 FROM slpcat/tomcat8:alpine-8.5
 MAINTAINER 若虚 <slpcat@qq.com>
 
-COPY --from=build /pinpoint/collector/target/pinpoint-collector-1.7.3.war /pinpoint-collector-1.7.3.war
+ARG PINPOINT_VERSION=${PINPOINT_VERSION:-1.8.0}
+COPY --from=builder /pinpoint/collector/target/pinpoint-collector-${PINPOINT_VERSION}.war /pinpoint-collector-${PINPOINT_VERSION}.war
 RUN \
     rm -rf /usr/local/tomcat/webapps \
     && mkdir -p /usr/local/tomcat/webapps/ROOT \
-    && unzip /pinpoint-collector-1.7.3.war -d /usr/local/tomcat/webapps/ROOT \
-    && rm /pinpoint-collector-1.7.3.war
+    && unzip /pinpoint-collector-${PINPOINT_VERSION}.war -d /usr/local/tomcat/webapps/ROOT \
+    && rm /pinpoint-collector-${PINPOINT_VERSION}.war
 
 COPY start-collector.sh /usr/local/bin/
-EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/start-collector.sh"]
