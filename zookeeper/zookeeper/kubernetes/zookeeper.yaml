@@ -25,8 +25,8 @@ data:
   init: "10"
   sync: "5"
   client.cnxns: "1024"
-  snap.retain: "3"
-  purge.interval: "0"
+  snap.retain: "10"
+  purge.interval: "24"
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget

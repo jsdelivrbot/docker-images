@@ -22,8 +22,8 @@ tickTimeMs: 2000
 initTicks: 10
 syncTicks: 5
 clientCnxns: 1024
-snapRetain: 3
-purgeHours: 1
+snapRetain: 10
+purgeHours: 24
 probeInitialDelaySeconds: 15
 probeTimeoutSeconds: 5
 antiAffinity: "hard"
