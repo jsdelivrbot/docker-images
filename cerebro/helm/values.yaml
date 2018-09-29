@@ -39,6 +39,6 @@ affinity: {}
 config:
   basePath: '/'
   restHistorySize: 50
-  hosts: []
-  #  - host:
-  #    name:
+  hosts:
+    - host: "http://elasticsearch:9200"
+      name: "elasticsearch"
