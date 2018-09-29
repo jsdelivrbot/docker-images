@@ -2,7 +2,7 @@ image:
   es:
     #repository: quay.io/pires/docker-elasticsearch-kubernetes
     repository: slpcat/docker-elasticsearch-kubernetes
-    tag: 6.2.3
+    tag: 6.4.0
     pullPolicy: Always
   init:
     repository: busybox
@@ -152,7 +152,7 @@ kibana:
   image:
     #repository: docker.elastic.co/kibana/kibana-oss
     repository: slpcat/kibana-oss
-    tag: 6.2.3
+    tag: 6.4.0
     pullPolicy: Always
   httpPort: 80
   resources:
