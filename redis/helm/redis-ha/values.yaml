@@ -4,10 +4,10 @@
 resources:
   server:
     requests:
-      memory: 200Mi
-      cpu: 100m
+      memory: 256Mi
+      cpu: 200m
     limits:
-      memory: 700Mi
+      memory: 1Gi
   sentinel:
     requests:
       memory: 200Mi
@@ -22,7 +22,8 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: slpcat/redis-4.0:4.0.10
+#redis_image: quay.io/smile/redis:4.0.8r0
+redis_image: slpcat/redis:4.0.8r0
 ## replicas number for each component
 replicas:
   servers: 3

@@ -12,12 +12,13 @@ redis:
     pullPolicy: IfNotPresent
   resources:
     limits:
-      memory: 128Mi
+      memory: 1Gi
     requests:
-      memory: 128Mi
+      memory: 256Mi
 microSentinel:
   image:
-    repository: dhilipkumars/redis-sentinel-k8s
+    #repository: dhilipkumars/redis-sentinel-k8s
+    repository: slpcat/redis-sentinel-k8s
     tag: 0.1.0
     pullPolicy: IfNotPresent
   resources: {}
@@ -29,16 +30,17 @@ microSentinel:
     #   memory: 20Mi
 makeSlave:
   image:
-    repository: dhilipkumars/mk-redis-slave
+    #repository: dhilipkumars/mk-redis-slave
+    repository: slpcat/mk-redis-slave
     tag: 0.1.0
     pullPolicy: IfNotPresent
   resources: {}
-    # limits:
+    limits:
     #   cpu: 10m
-    #   memory: 20Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 20Mi
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
 
 # Service related configurations common for templates/service.yaml and templates/ss.yaml (redis container)
 service:
