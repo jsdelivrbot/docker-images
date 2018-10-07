@@ -18,6 +18,11 @@ existingConfigMap: metallb-config
 # Refer to https://metallb.universe.tf/configuration/ for
 # available options.
 configInline:
+  address-pools:
+  - name: default
+    protocol: layer2
+    addresses:
+    - 192.168.1.240-192.168.1.250
 
 rbac:
   # create specifies whether to install and use RBAC rules.
