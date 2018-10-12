@@ -24,6 +24,7 @@ helm repo add fabric8 https://fabric8.io/helm
 helm repo add gitlab https://charts.gitlab.io
 helm repo add jenkins-x	https://chartmuseum.build.cd.jenkins-x.io
 helm repo add openfaas https://openfaas.github.io/faas-netes
+helm repo add monocular https://kubernetes-helm.github.io/monocular
 #helm repo add aliyun https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
 helm install --name wordpress-test --set "persistence.enabled=false,mariadb.persistence.enabled=false" stable/wordpress
 https://kubeapps.com/ 你可以寻找和发现已有的Charts
