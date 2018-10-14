@@ -18,8 +18,14 @@ NoSQL数据库/缓存/存储：memcache，redis，ssdb, mongodb,cassandra,
 企业ERP: odoo
 开发环境SDK: golang,golang-gvm,oracle-jdk,oracle-jdk-maven
 微服务管理与持续发布: fabric8,jenkins-x
-微服务框架/组件：istio,dubbo,dubbokeeper,kong,consul
+微服务框架/组件：istio,dubbo,dubbokeeper,kong,consul,openlambda
 日志集群：elastic-stack(elasticsearch+cerebro+kibana)
 日志采集: logstash,filebeat,logtail
 监控/APM：heapster,prometheus,pinpoint,jaeger,zipkin
 动态性能追踪：bcc-tools,systemtap,sysdig
+
+云原生应用
+分布式存储：rook-ceph,rook-minio,openebs
+虚拟化: kubevirt
+监控: prometheus-operator
+配置管理：etcd-operator

@@ -261,6 +261,9 @@ ceph dashboard set-login-credentials user-name password
 查看服务访问方式
 ceph mgr services
 
+开启Prometheus exporter
+ceph mgr module enable prometheus
+
 ceph存储节点扩容操作
 新的节点打上临时标签
 kubectl label node <nodename> ceph-new=true
