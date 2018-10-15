@@ -104,9 +104,8 @@ RUN export CONTAINER_USER=confluence                &&  \
     rm -rf /var/log/*
 
 # add patch
-#ADD mysql-connector-java-5.1.39-bin.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/lib/mysql-connector-java-5.1.39-bin.jar
-#ADD atlassian-extras-3.2.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/lib/atlassian-extras-3.2.jar
-#ADD atlassian-universal-plugin-manager-plugin-2.21.3.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/atlassian-bundled-plugins/atlassian-universal-plugin-manager-plugin-2.21.3.jar
+#ADD atlassian-extras-3.2.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/atlassian-extras-3.2.jar
+#ADD atlassian-universal-plugin-manager-plugin-2.21.3.jar /opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/atlassian-universal-plugin-manager-plugin-2.21.3.jar
 
 # Image Metadata
 LABEL com.blacklabelops.application.confluence.version=$CONFLUENCE_VERSION \
