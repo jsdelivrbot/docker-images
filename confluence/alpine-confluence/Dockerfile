@@ -1,5 +1,6 @@
 # upstream https://github.com/blacklabelops/confluence
-FROM blacklabelops/java:server-jre.8
+#FROM blacklabelops/java:server-jre.8
+FROM slpcat/jdk:alpine
 MAINTAINER 若虚 <slpcat@qq.com>
 
 # Container variables
@@ -20,7 +21,7 @@ RUN set -ex \
     && echo "${TIMEZONE}" > /etc/TZ \
     && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 
-ARG CONFLUENCE_VERSION=6.7.1
+ARG CONFLUENCE_VERSION=5.10.8
 # permissions
 ARG CONTAINER_UID=1000
 ARG CONTAINER_GID=1000
@@ -33,7 +34,7 @@ ENV CONF_HOME=/var/atlassian/confluence \
     MYSQL_DRIVER_VERSION=5.1.44
 
 #copy installer
-COPY atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz /tmp/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz
+#COPY atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz /tmp/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz
 
 # Install Atlassian Confluence
 RUN export CONTAINER_USER=confluence                &&  \
@@ -65,7 +66,7 @@ RUN export CONTAINER_USER=confluence                &&  \
     mkdir -p ${CONF_HOME} \
     && chown -R confluence:confluence ${CONF_HOME} \
     && mkdir -p ${CONF_INSTALL}/conf \
-    #&& wget -O /tmp/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz && \
+    && wget -O /tmp/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz && \
     tar xzf /tmp/atlassian-confluence-${CONFLUENCE_VERSION}.tar.gz --strip-components=1 -C ${CONF_INSTALL} && \
     echo "confluence.home=${CONF_HOME}" > ${CONF_INSTALL}/confluence/WEB-INF/classes/confluence-init.properties && \
     # Install database drivers
@@ -101,6 +102,11 @@ RUN export CONTAINER_USER=confluence                &&  \
     rm -rf /var/cache/apk/*                         &&  \
     rm -rf /tmp/*                                   &&  \
     rm -rf /var/log/*
+
+# add patch
+#ADD mysql-connector-java-5.1.39-bin.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/lib/mysql-connector-java-5.1.39-bin.jar
+#ADD atlassian-extras-3.2.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/lib/atlassian-extras-3.2.jar
+#ADD atlassian-universal-plugin-manager-plugin-2.21.3.jar /opt/atlassian/jira/atlassian-jira/WEB-INF/atlassian-bundled-plugins/atlassian-universal-plugin-manager-plugin-2.21.3.jar
 
 # Image Metadata
 LABEL com.blacklabelops.application.confluence.version=$CONFLUENCE_VERSION \
