@@ -104,8 +104,11 @@ RUN export CONTAINER_USER=confluence                &&  \
     rm -rf /var/log/*
 
 # add patch
-#ADD atlassian-extras-3.2.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/atlassian-extras-3.2.jar
+RUN sed -i /CATALINA_OPTS/d /opt/atlassian/confluence/bin/setenv.sh
+#patch rename atlassian-extras-2.4.jar
+#ADD atlassian-extras-decoder-v2-3.2.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/atlassian-extras-decoder-v2-3.2.jar
 #ADD atlassian-universal-plugin-manager-plugin-2.21.3.jar /opt/atlassian/confluence/confluence/WEB-INF/atlassian-bundled-plugins/atlassian-universal-plugin-manager-plugin-2.21.3.jar
+#ADD confluence_5.10.0_rc1_language_pack_zh_CN.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/confluence_5.10.0_rc1_language_pack_zh_CN.jar
 
 # Image Metadata
 LABEL com.blacklabelops.application.confluence.version=$CONFLUENCE_VERSION \
@@ -122,5 +125,6 @@ VOLUME ["/var/atlassian/confluence"]
 # Set the default working directory as the Confluence home directory.
 WORKDIR ${CONF_HOME}
 COPY docker-entrypoint.sh /home/confluence/docker-entrypoint.sh
-ENTRYPOINT ["/sbin/tini","--","/home/confluence/docker-entrypoint.sh"]
-CMD ["confluence"]
+#ENTRYPOINT ["/sbin/tini","--","/home/confluence/docker-entrypoint.sh"]
+#CMD ["confluence"]
+CMD ["/sbin/tini","--","/home/confluence/docker-entrypoint.sh","confluence"]
