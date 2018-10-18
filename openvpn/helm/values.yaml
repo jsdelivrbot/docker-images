@@ -10,7 +10,8 @@ updateStrategy: {}
   #   maxUnavailable: 0
 
 image:
-  repository: jfelten/openvpn-docker
+  #repository: jfelten/openvpn-docker
+  repository: slpcat/openvpn-docker
   tag: 1.1.0
   pullPolicy: IfNotPresent
 service:

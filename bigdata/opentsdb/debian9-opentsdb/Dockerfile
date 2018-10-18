@@ -1,4 +1,5 @@
-FROM openjdk:8u102-jre
+#https://github.com/cloudflare/docker-opentsdb
+FROM openjdk:8u181-jre
 
 RUN useradd opentsdb && \
     apt-get update && \
