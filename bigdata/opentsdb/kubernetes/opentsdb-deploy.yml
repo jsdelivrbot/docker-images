@@ -62,8 +62,22 @@ spec:
         env:
           - name: JVMARGS
             value: "-Xms2g -Xmx2g -enableassertions -enablesystemassertions"
+          - name: TSD_CONF_tsd__network__port
+            value: "4242"
           - name: TSD_CONF_tsd__storage__hbase__zk_quorum
             value: "hbase-zk-zookeeper-headless:2181"
+          - name: TSD_CONF_tsd__storage__hbase__data_table
+            value: "tsdb"
+          - name: TSD_CONF_tsd__storage__hbase__zk_basedir
+            value: "hbase"
+          - name: TSD_CONF_tsd__core__auto_create_metrics
+            value: "true"
+          - name: TSD_CONF_tsd.http.request.enable_chunked
+            value: "true"
+          - name: TSD_CONF_tsd.http.request.max_chunk
+            value: "65536"
+          - name: TSD_CONF_tsd.storage.fix_duplicates
+            value: "true"
         ports:
           - name: http
             containerPort: 4242
