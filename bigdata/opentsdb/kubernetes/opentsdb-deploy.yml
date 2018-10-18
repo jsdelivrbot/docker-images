@@ -69,7 +69,7 @@ spec:
           - name: TSD_CONF_tsd__storage__hbase__data_table
             value: "tsdb"
           - name: TSD_CONF_tsd__storage__hbase__zk_basedir
-            value: "hbase"
+            value: "/hbase"
           - name: TSD_CONF_tsd__core__auto_create_metrics
             value: "true"
           - name: TSD_CONF_tsd.http.request.enable_chunked
