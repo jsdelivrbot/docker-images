@@ -1,0 +1,5 @@
+vendor/
+generated/
+pkg/client/
+zz_generated
+_mock.go
