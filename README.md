@@ -10,8 +10,8 @@ artifactory仓库: nexus2,nexus3
 大数据集群: hadoop(hdfs+yarn),hbase,spark,flink
 web服务器/容器: nginx-php,apache-php,tomcat
 SQL数据库: mysql,percona,mariadb,postgresql
-NoSQL数据库/缓存/存储: memcache,redis,ssdb,mongodb,cassandra
-NewSQL数据库: TiDB
+NoSQL数据库/缓存/存储: memcache,rethinkdb,redis,ssdb,mongodb,cassandra
+NewSQL数据库: TiDB,cockroachdb
 时间序列数据库: influxdb,opentsdb,m3db
 消息队列/流存储: rabbitmq,rocketmq,rocketmq-console-ng,kafka,kafka-manager
 配置管理: zookeeper,zkui,qconf,etcd
