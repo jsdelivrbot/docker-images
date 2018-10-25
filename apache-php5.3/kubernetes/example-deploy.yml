@@ -28,9 +28,9 @@ spec:
       #- name: registrykey-ali-ext
       securityContext:
         sysctls:
-          #kubenetes v1.11 and kernel version 4.15 needed
-          - name: kernel.msgmax
-            value: "65536"
+          #kubenetes >= v1.11 and kernel version >= 4.15 needed
+          #- name: kernel.msgmax
+          #  value: "65536"
           - name: net.ipv4.tcp_syncookies
             value: "0"
           - name: net.ipv4.ip_local_port_range
@@ -79,7 +79,7 @@ spec:
             value: "512"
           - name: net.ipv4.tcp_fwmark_accept
             value: "1"
-          - name: net.ipv4.fwmark_reflect=
+          - name: net.ipv4.fwmark_reflect
             value: "1"
       containers:
       - name: example-web
@@ -112,8 +112,11 @@ spec:
             #nvidia.com/gpu: 1
             memory: 512Mi
         securityContext:
+          #allowPrivilegeEscalation: false
           capabilities: {}
           privileged: false
+          #runAsUser: 1000
+          #fsGroup: 1000
         env:
           - name: PROFILE
             value: "test"

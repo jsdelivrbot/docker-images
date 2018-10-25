@@ -1,6 +1,6 @@
 常用docker容器镜像构建，kubernetes配置文件，helm模板,用于搭建基于容器的可控云计算基础设施,包括物理机裸机，虚拟机，多厂商云主机，有效规避云计算厂商锁定
 kubernetes网络方案推荐使用cilium,支持vxlan,bgp以及eBPF引擎
-容器内核参数已经为高并发大吞吐量低延迟场景优化，完美运行需要4.15及以上版本内核，低版本内核需要删除sysctl相关annotations，这样做会失去单实例高并发能力。
+容器内核参数已经为高并发大吞吐量低延迟场景优化，完美运行需要kubernetes版本>=v1.11和内核版本>=4.15，低版本kubernetes和内核需要删除sysctl相关配置，这样做会失去单实例高并发能力。
 支持在kubernetes集群里面运行Linux桌面环境(暂无3D加速)
 
 代码仓库: gitlab-ce
@@ -35,4 +35,6 @@ kubernetes可视化管理工具: kubernetes-dashboard,weavescope
 
 桌面环境
 ubuntu-xfce-vnc
+ubuntu-icewm-vnc
 centos-xfce-vnc
+centos-icewm-vnc
