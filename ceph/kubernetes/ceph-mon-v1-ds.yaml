@@ -47,8 +47,8 @@ spec:
             path: /var/lib/ceph/mon
       containers:
         - name: ceph-mon
-          #image: ceph/daemon:latest
-          image: slpcat/ceph-daemon:mimic
+          #image: slpcat/ceph-daemon:mimic
+          image: slpcat/ceph-daemon:v3.1.0-mimic-centos7
           imagePullPolicy: Always
           lifecycle:
             preStop:

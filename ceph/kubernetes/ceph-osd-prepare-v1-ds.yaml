@@ -50,8 +50,8 @@ spec:
             path: /var/lib/ceph/osd
       containers:
         - name: osd-pod
-          #image: ceph/daemon:latest
-          image: slpcat/ceph-daemon:mimic
+          #image: slpcat/ceph-daemon:mimic
+          image: slpcat/ceph-daemon:v3.1.0-mimic-centos7
           imagePullPolicy: Always
           volumeMounts:
             - name: devices

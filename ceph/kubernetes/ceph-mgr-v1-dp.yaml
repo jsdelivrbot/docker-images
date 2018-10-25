@@ -59,8 +59,8 @@ spec:
             secretName: ceph-bootstrap-rbd-keyring
       containers:
         - name: ceph-mgr
-          #image: ceph/daemon:latest
-          image: slpcat/ceph-daemon:mimic
+          #image: slpcat/ceph-daemon:mimic
+          image: slpcat/ceph-daemon:v3.1.0-mimic-centos7
           imagePullPolicy: Always
           ports:
             - containerPort: 6800
