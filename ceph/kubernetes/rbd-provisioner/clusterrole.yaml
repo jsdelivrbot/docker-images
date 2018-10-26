@@ -1,5 +1,5 @@
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: rbd-provisioner
   namespace: ceph
@@ -15,8 +15,8 @@ rules:
     verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["events"]
-    verbs: ["list", "watch", "create", "update", "patch"]
+    verbs: ["create", "update", "patch"]
   - apiGroups: [""]
     resources: ["services"]
-    resourceNames: ["kube-dns"]
+    resourceNames: ["kube-dns","coredns"]
     verbs: ["list", "get"]

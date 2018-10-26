@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: headless-vnc
-        image: slpcat/ubuntu-xfce-vnc
+        image: slpcat/ubuntu-icewm-vnc
         imagePullPolicy: Always
         args:
           ### make normal UI startup to connect via: oc rsh <pod-name> bash
