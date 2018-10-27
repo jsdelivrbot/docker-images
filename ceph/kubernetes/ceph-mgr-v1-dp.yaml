@@ -21,8 +21,8 @@ spec:
         app: ceph
         daemon: mgr
     spec:
-      #hostNetwork: true
-      #dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccount: default
       tolerations:
         - key: CriticalAddonsOnly
