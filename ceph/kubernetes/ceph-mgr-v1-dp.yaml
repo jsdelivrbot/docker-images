@@ -62,6 +62,13 @@ spec:
           #image: slpcat/ceph-daemon:mimic
           image: slpcat/ceph-daemon:v3.1.0-mimic-centos7
           imagePullPolicy: Always
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "sh"
+                  - "-c"
+                  - cp /tmp/ceph/* /etc/ceph/
           ports:
             - containerPort: 6800
             - containerPort: 8443
@@ -77,7 +84,7 @@ spec:
               value: ceph
           volumeMounts:
             - name: ceph-conf
-              mountPath: /etc/ceph
+              mountPath: /tmp/ceph
             - name: ceph-bootstrap-osd-keyring
               mountPath: /var/lib/ceph/bootstrap-osd
             - name: ceph-bootstrap-mds-keyring

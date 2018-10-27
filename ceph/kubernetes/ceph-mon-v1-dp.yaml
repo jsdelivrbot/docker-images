@@ -66,6 +66,12 @@ spec:
                   # remove the mon on Pod stop.
                   command:
                     - "/remove-mon.sh"
+            postStart:
+              exec:
+                command:
+                  - "sh"
+                  - "-c"
+                  - cp /tmp/ceph/* /etc/ceph/
           ports:
             - containerPort: 6789
           env:
@@ -86,7 +92,7 @@ spec:
                   fieldPath: status.podIP
           volumeMounts:
             - name: ceph-conf
-              mountPath: /etc/ceph
+              mountPath: /tmp/ceph
             - name: ceph-bootstrap-osd-keyring
               mountPath: /var/lib/ceph/bootstrap-osd
             - name: ceph-bootstrap-mds-keyring
