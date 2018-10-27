@@ -35,8 +35,8 @@ spec:
                 operator: In
                 values: ["rgw"]
             topologyKey: kubernetes.io/hostname
-      #hostNetwork: true
-      #dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccount: default
       volumes:
         - name: ceph-conf
