@@ -35,8 +35,8 @@ spec:
                 operator: In
                 values: ["rgw"]
             topologyKey: kubernetes.io/hostname
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      #hostNetwork: true
+      #dnsPolicy: ClusterFirstWithHostNet
       serviceAccount: default
       volumes:
         - name: ceph-conf
@@ -59,12 +59,12 @@ spec:
           #image: slpcat/ceph-daemon:mimic
           image: slpcat/ceph-daemon:v3.1.0-mimic-centos7
           ports:
-            - containerPort: 8088
+            - containerPort: 8080
           env:
             - name: CEPH_DAEMON
               value: RGW
             - name: RGW_CIVETWEB_PORT
-              value: "8088"
+              value: "8080"
             #- name: RGW_NAME
             #  value: myrgw
             #- name: RGW_ZONEGROUP
@@ -91,13 +91,13 @@ spec:
           livenessProbe:
               httpGet:
                 path: /
-                port: 8088
+                port: 8080
               initialDelaySeconds: 120
               timeoutSeconds: 5
           readinessProbe:
               httpGet:
                 path: /
-                port: 8088
+                port: 8080
               timeoutSeconds: 5
           resources:
             requests:

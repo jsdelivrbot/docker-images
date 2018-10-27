@@ -21,8 +21,8 @@ spec:
         app: ceph
         daemon: mgr
     spec:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      #hostNetwork: true
+      #dnsPolicy: ClusterFirstWithHostNet
       serviceAccount: default
       tolerations:
         - key: CriticalAddonsOnly
@@ -64,7 +64,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 6800
-            - containerPort: 7000
+            - containerPort: 8443
               name: dashboard
           env:
             - name: CEPH_DAEMON
