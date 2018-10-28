@@ -21,6 +21,7 @@ spec:
         sidecar.istio.io/inject: "false"
     spec:
       securityContext:
+        fsGroup: 1000
         sysctls:
           #kubenetes >= v1.11 and kernel version >= 4.15 needed
           #- name: kernel.msgmax
@@ -121,8 +122,6 @@ spec:
       #imagePullSecrets:
       #- name: myregistrykey
       restartPolicy: Always
-      securityContext:
-        fsGroup: 1000
       serviceAccount: jenkins
   volumeClaimTemplates:
   - metadata:
