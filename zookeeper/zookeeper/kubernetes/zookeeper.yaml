@@ -67,6 +67,8 @@ spec:
                     - zk
               topologyKey: "kubernetes.io/hostname"
       securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
         sysctls:
           #kubenetes >= v1.11 and kernel version >= 4.15 needed
           #- name: kernel.msgmax
@@ -203,9 +205,6 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
   volumeClaimTemplates:
   - metadata:
       name: datadir
