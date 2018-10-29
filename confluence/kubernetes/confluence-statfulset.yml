@@ -115,7 +115,7 @@ spec:
             memory: 1Gi
           limits:
             cpu: 8000m
-            memory: 8Gi
+            memory: 16Gi
         ports:
           - name: web
             containerPort: 8090
