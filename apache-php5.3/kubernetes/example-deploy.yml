@@ -10,6 +10,7 @@ spec:
   selector:
     matchLabels:
       app: example-web
+      version: v1
   #minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
   strategy:
     rollingUpdate:  #由于replicas为3,则整个升级,pod个数在2-4个之间
@@ -19,6 +20,7 @@ spec:
     metadata:
       labels:
         app: example-web
+        version: v1
     spec:
       #nodeName: k8s.node1 #指定调度节点为k8s.node1
       #nodeSelector:  #调度特定的节点

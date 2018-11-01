@@ -14,7 +14,7 @@ global:
     externalIP:
     ssh: ~
   ingress:
-    configureCertmanager: true
+    configureCertmanager: false
     annotations: {}
     enabled: true
   initialRootPassword: {}
