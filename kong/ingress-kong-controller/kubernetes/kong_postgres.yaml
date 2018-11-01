@@ -1,28 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kong-dashboard
+  name: kong
   namespace: kong
   labels:
-    app: kong-dashboard
+    app: kong
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: kong-dashboard
+      app: kong
   template:
     metadata:
       labels:
-        name: kong-dashboard
-        app: kong-dashboard
-      annotations:
-        #disable istio sidecar injection
-        #sidecar.istio.io/inject: "false"
-        #scheduler.alpha.kubernetes.io/critical-pod=""
+        name: kong
+        app: kong
     spec:
       securityContext:
         sysctls:
-          #kubernetes >= v1.11 and kernel version >= 4.15 needed
+          #kubenetes >= v1.11 and kernel version >= 4.15 needed
           #- name: kernel.msgmax
           #  value: "65536"
           - name: net.ipv4.tcp_syncookies
@@ -76,18 +72,38 @@ spec:
           - name: net.ipv4.fwmark_reflect
             value: "1"
       containers:
-      - name: kong-dashboard
-        image: slpcat/kong-dashboard
-        imagePullPolicy: Always
-        command: ["./bin/kong-dashboard.js"]
-        args: ["start", "-u http://kong-ingress-controller:8001", "--basic-auth", "user=password"]
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: "1"
-            memory: 1Gi
+      - name: kong
+        #image: kong:0.14.1-centos
+        image: kong:0.14.1-alpine
+        env:
+          - name: KONG_ADMIN_LISTEN
+            value: 'off'
+          - name: KONG_DATABASE
+            value: "postgres"
+          - name: KONG_PG_HOST
+            value: "postgres"
+          - name: KONG_PG_PORT
+            value: "5432"
+          - name: KONG_PG_DATABASE
+            value: "kong"
+          - name: KONG_PG_USER
+            value: "kong"
+          - name: KONG_PG_PASSWORD
+            value: "kong"
+          - name: KONG_DNS_ORDER
+            value: "A,SRV,LAST,CNAME"
+          - name: KONG_PROXY_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_ADMIN_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_PROXY_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_ERROR_LOG
+            value: "/dev/stderr"
         ports:
-          - name: web
-            containerPort: 8080
+        - name: proxy
+          containerPort: 8000
+          protocol: TCP
+        - name: proxy-ssl
+          containerPort: 8443
+          protocol: TCP

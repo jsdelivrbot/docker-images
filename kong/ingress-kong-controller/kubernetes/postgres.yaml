@@ -45,21 +45,22 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         ports:
           - containerPort: 5432
+        volumeMounts:
+          - name: pgdata
+            mountPath: "/var/lib/postgresql"
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60
-      volumes:
-      - name: datadir
-        persistentVolumeClaim:
-          claimName: datadir
   volumeClaimTemplates:
   - metadata:
-      name: datadir
+      name: pgdata
     spec:
       accessModes:
-        - "ReadWriteOnce"
+      - ReadWriteOnce
+      #ceph rbd storageclass
+      #storageClassName: rbd
       resources:
         requests:
-          storage: 1Gi
+          storage: 8Gi
 
 ---

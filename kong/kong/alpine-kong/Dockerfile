@@ -1,38 +1,9 @@
-#upstream https://github.com/Kong/docker-kong/tree/master/alpine
-FROM alpine:3.7
-MAINTAINER 若虚 <slpcat@qq.com>
+#upstream: https://github.com/Kong/docker-kong/raw/9bbc9e8b4a61cba5cc4e4e4562a802dace4348ff/alpine/Dockerfile
+FROM alpine:3.6
+LABEL maintainer Marco Palladino, marco@mashape.com
 
-# Container variables
-ENV \
-    TERM="xterm" \
-    LANG="en_US.UTF-8" \
-    LANGUAGE="en_US.UTF-8" \
-    LC_ALL="en_US.UTF-8" \
-    TIMEZONE="Asia/Shanghai"
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
-
-# Set timezone and locales
-RUN set -ex \
-    && apk update \
-    && apk upgrade \
-    && apk add \
-           bash \
-           tzdata \
-           vim \
-           tini \
-           su-exec \
-           gzip \
-           tar \
-           wget \
-           curl \
-    && echo "${TIMEZONE}" > /etc/TZ \
-    && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
-    # Network fix
-    && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' >> /etc/nsswitch.conf
-
-ENV KONG_VERSION 0.11.2
-ENV KONG_SHA256 10f7f0f5d1bf52afaaf9278f2ef8f7867fec6eb1ce2273ebe6032fa976496011
+ENV KONG_VERSION 0.14.1
+ENV KONG_SHA256 e29937c5117ac2debcffe0d0016996dd5f0c516ef628f1edc029138715981387
 
 RUN apk add --no-cache --virtual .build-deps wget tar ca-certificates \
 	&& apk add --no-cache libgcc openssl pcre perl tzdata curl \
@@ -47,10 +18,11 @@ RUN apk add --no-cache --virtual .build-deps wget tar ca-certificates \
 	&& apk del .build-deps
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY *.conf /usr/local/kong/
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 8000 8443 8001 8444
 
 STOPSIGNAL SIGTERM
 
-CMD ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/"]
+CMD ["kong", "docker-start"]
