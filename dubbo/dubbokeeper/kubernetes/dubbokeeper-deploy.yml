@@ -24,7 +24,7 @@ spec:
       #- name: registrykey-ali-vpc
       securityContext:
         sysctls:
-          #kubenetes >= v1.11 and kernel version >= 4.15 needed
+          #kubernetes >= v1.11 and kernel version >= 4.15 needed
           #- name: kernel.msgmax
           #  value: "65536"
           - name: net.ipv4.tcp_syncookies
