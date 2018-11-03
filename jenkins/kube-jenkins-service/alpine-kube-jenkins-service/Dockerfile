@@ -65,9 +65,9 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
         "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
 
 ENV JAVA_VERSION=8 \
-    JAVA_UPDATE=181 \
-    JAVA_BUILD=13 \
-    JAVA_PATH=96a7b8442fe848ef90c96a2fad6ed6d1 \
+    JAVA_UPDATE=191 \
+    JAVA_BUILD=12 \
+    JAVA_PATH=2787e4a523244c269598db4e85c51e0c \
     JAVA_HOME="/usr/lib/jvm/default-jvm"
 
 RUN apk add --no-cache --virtual=build-dependencies wget ca-certificates unzip && \
@@ -155,7 +155,7 @@ COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
 
 # jenkins version being bundled in this docker image
 ARG JENKINS_VERSION
-ENV JENKINS_VERSION ${JENKINS_VERSION:-2.121.3}
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.138.2}
 
 # jenkins.war checksum, download will be validated using it
 ARG JENKINS_SHA=50fbce11fa147d0ecd9ecf36cdae83ef795fb7d4776f33b5ea13bc15bf6e3c13
