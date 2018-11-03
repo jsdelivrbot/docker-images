@@ -158,7 +158,7 @@ ARG JENKINS_VERSION
 ENV JENKINS_VERSION ${JENKINS_VERSION:-2.138.2}
 
 # jenkins.war checksum, download will be validated using it
-ARG JENKINS_SHA=50fbce11fa147d0ecd9ecf36cdae83ef795fb7d4776f33b5ea13bc15bf6e3c13
+ARG JENKINS_SHA=d8ed5a7033be57aa9a84a5342b355ef9f2ba6cdb490db042a6d03efb23ca1e83
 
 # Can be used to customize where jenkins.war get downloaded from
 #http://mirrors.jenkins.io/war-stable/latest/jenkins.war
