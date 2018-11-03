@@ -22,7 +22,7 @@
         <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
           <inheritFrom></inheritFrom>
           <name>jnlp-slave</name>
-          <namespace>default</namespace>
+          <namespace>ci</namespace>
           <privileged>false</privileged>
           <alwaysPullImage>true</alwaysPullImage>
           <instanceCap>80</instanceCap>
@@ -70,8 +70,8 @@
       </templates>
       <serverUrl>https://kubernetes.default.svc.cluster.local</serverUrl>
       <skipTlsVerify>false</skipTlsVerify>
-      <namespace>default</namespace>
-      <jenkinsUrl>http://jenkins.default.svc.cluster.local:8080</jenkinsUrl>
+      <namespace>ci</namespace>
+      <jenkinsUrl>http://jenkins.ci.svc.cluster.local:8080</jenkinsUrl>
       <containerCap>10</containerCap>
       <retentionTimeout>5</retentionTimeout>
       <connectTimeout>0</connectTimeout>

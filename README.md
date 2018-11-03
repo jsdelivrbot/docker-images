@@ -8,7 +8,7 @@ kubernetes网络方案推荐使用cilium,支持vxlan,bgp以及eBPF引擎
 artifactory仓库: nexus2,nexus3
 分布式存储: ceph,minio
 大数据集群: hadoop(hdfs+yarn),hbase,spark,flink
-web服务器/容器: nginx-php,apache-php,tomcat
+web服务器/容器: nginx-php,apache-php,tomcat,resin
 SQL数据库: mysql,percona,mariadb,postgresql
 NoSQL数据库/缓存/存储: memcache,rethinkdb,redis,ssdb,mongodb,cassandra
 NewSQL数据库: TiDB,cockroachdb
@@ -23,7 +23,7 @@ NewSQL数据库: TiDB,cockroachdb
 微服务框架/组件: istio,knative,dubbo,dubbokeeper,kong,kong-dashboard,consul,openlambda
 日志集群: elastic-stack(elasticsearch+cerebro+kibana)
 日志采集: logstash,filebeat,logtail
-监控/APM: heapster,prometheus,pinpoint,jaeger,zipkin
+监控/APM: heapster,kube-state-metrics,metrics-server,prometheus,pinpoint,jaeger,zipkin
 动态性能追踪: bcc-tools,systemtap,sysdig
 kubernetes可视化管理工具: kubernetes-dashboard,weavescope
 

@@ -1,24 +1,24 @@
+return [[
 charset UTF-8;
 
-#error_log syslog:server=kong-hf.mashape.com:61828 error;
+> if anonymous_reports then
+${{SYSLOG_REPORTS}}
+> end
 
-error_log /dev/stderr notice;
-default_type  application/octet-stream;
-#http2_chunk_size 8k;
-#http2_body_preread_size 64k;
-#http2_idle_timeout 15m;
-#http2_max_concurrent_streams 512;
-#http2_max_field_size 4k;
-#http2_max_header_size 16k;
-#http2_recv_buffer_size 256k;
-#http2_recv_timeout 30s;
+error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
 
-  #log_format combined '$remote_addr - $remote_user [$time_local] '
-  #            '"$request" $status $body_bytes_sent '
-  #            '"$http_referer" "$http_user_agent"';
-  uninitialized_variable_warn off;
-  #open_log_file_cache max=1000 inactive=20s valid=1m min_uses=2;
-  server_tokens off;
+> if nginx_optimizations then
+>-- send_timeout 60s;          # default value
+>-- keepalive_timeout 75s;     # default value
+>-- client_body_timeout 60s;   # default value
+>-- client_header_timeout 60s; # default value
+>-- tcp_nopush on;             # disabled until benchmarked
+>-- proxy_buffer_size 128k;    # disabled until benchmarked
+>-- proxy_buffers 4 256k;      # disabled until benchmarked
+>-- proxy_busy_buffers_size 256k; # disabled until benchmarked
+>-- reset_timedout_connection on; # disabled until benchmarked
+> end
+
   #重定向使用域名(Host头)
   server_name_in_redirect on;
   server_names_hash_bucket_size 256;
@@ -30,10 +30,6 @@ default_type  application/octet-stream;
   keepalive_disable msie6;
   client_header_buffer_size 4k;
   large_client_header_buffers 4 32k;
-  client_header_timeout  1m;
-  client_body_timeout    1m;
-  reset_timedout_connection on;
-  send_timeout           1m;
 
   open_file_cache max=1000 inactive=20s;
   open_file_cache_valid 30s;
@@ -42,15 +38,9 @@ default_type  application/octet-stream;
   read_ahead 128k;
   sendfile        on;
   sendfile_max_chunk 512k;
-# aio threads=default;
-# aio_write on;
-# aio sendfile;
-# aio threads;
 # directio 4m;
   tcp_nodelay   on;
   tcp_nopush    on;
-#  client_max_body_size 100m;
-#  client_body_buffer_size 8m;
   types_hash_max_size 2048;
   request_pool_size 4k;
   keepalive_timeout  60;
@@ -60,56 +50,15 @@ default_type  application/octet-stream;
   output_buffers 8 64k;
   postpone_output 1460;
 
-  fastcgi_connect_timeout      600;
-  fastcgi_intercept_errors      on;
-  fastcgi_send_timeout         600;
-  fastcgi_read_timeout         600;
-  fastcgi_buffer_size          128k;
-  fastcgi_buffers 16           256k;
-  fastcgi_busy_buffers_size    256k;
-  fastcgi_temp_file_write_size 256k;
-  #fastcgi_temp_path  /var/tmp/fastcgi_temp;
-  #client_body_temp_path  /var/tmp/client_body_temp;
-  #fastcgi_cache_path /var/run/nginx/fastcgi_cache levels=2:2 keys_zone=TEST:320m inactive=16m max_size=2g;
-  #fastcgi_cache        TEST;
-  #fastcgi_cache_key  unix:/var/run/php-fpm.sock$request_uri;
-  #fastcgi_cache_key  127.0.0.1:9000$request_uri;
-  #fastcgi_cache_key  $request_method://$host$request_uri;
-  #fastcgi_cache_methods  POST;
-  #fastcgi_cache_valid 200 302 1h;
-  #fastcgi_cache_valid 301 2h;
-  #fastcgi_cache_valid any 1m;
-  #fastcgi_cache_min_uses 1;
-  #fastcgi_cache_use_stale error timeout invalid_header http_500;
-  #fastcgi_keep_conn on;
-
-  #proxy_cache仅用于前端反向代理，后端关掉避免浪费内存
-  #proxy_cache_path  /var/lib/nginx/tmp/proxy_cache  levels=2:2 keys_zone=proxy_cache:512m inactive=2d max_size=8g;
-  proxy_cache_methods GET HEAD;
-  #proxy_cache_background_update on;
   proxy_http_version 1.1;
-  proxy_set_header Connection "";
-  proxy_set_header Host  $host;
-  #proxy_set_header Accept-Encoding 'gzip';
-  #proxy_set_header X-Real-IP $realip_remote_addr;
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_set_header X-Forwarded-Proto   $scheme;
   #避免一次将大文件加入缓存
   proxy_set_header Range $http_range;
   proxy_set_header If-Range $http_if_range;
   proxy_no_cache  $http_range $http_if_range;
-  proxy_hide_header X-Powered-By;
-  proxy_cache_lock          off;
-  proxy_cache_lock_timeout  5s;
-  proxy_cache_use_stale     error timeout invalid_header http_403 http_404 http_500 http_502 http_503 http_504;
-  #不在静态定义列表的内容都视为动态内容，不进行缓存,避免缓存导致访问异常
-  proxy_buffering off;
+  #proxy_buffering off;
   proxy_connect_timeout 600;
   proxy_send_timeout 600;
   proxy_read_timeout 600;
-  proxy_buffer_size 128k;
-  proxy_buffers 8 128k;
-  proxy_busy_buffers_size 256k;
   proxy_temp_file_write_size 256k;
   proxy_max_temp_file_size 64m;
   #屏蔽后端错误信息
@@ -129,27 +78,37 @@ default_type  application/octet-stream;
   #gzip_types       text/plain text/css text/xml text/javascript application/json application/x-javascript application/javascript application/xml application/xml+rss;
   #gzip_vary on;
 
-client_max_body_size 0;
+
+client_max_body_size ${{CLIENT_MAX_BODY_SIZE}};
 proxy_ssl_server_name on;
 underscores_in_headers on;
 
-lua_package_path './?.lua;./?/init.lua;;;';
-lua_package_cpath ';;';
-lua_socket_pool_size 30;
+lua_package_path '${{LUA_PACKAGE_PATH}};;';
+lua_package_cpath '${{LUA_PACKAGE_CPATH}};;';
+lua_socket_pool_size ${{LUA_SOCKET_POOL_SIZE}};
 lua_max_running_timers 4096;
 lua_max_pending_timers 16384;
 lua_shared_dict kong                5m;
-lua_shared_dict kong_db_cache       128m;
+lua_shared_dict kong_db_cache       ${{MEM_CACHE_SIZE}};
 lua_shared_dict kong_db_cache_miss 12m;
 lua_shared_dict kong_locks          8m;
 lua_shared_dict kong_process_events 5m;
 lua_shared_dict kong_cluster_events 5m;
 lua_shared_dict kong_healthchecks   5m;
 lua_shared_dict kong_rate_limiting_counters 12m;
+> if database == "cassandra" then
+lua_shared_dict kong_cassandra      5m;
+> end
 lua_socket_log_errors off;
+> if lua_ssl_trusted_certificate then
+lua_ssl_trusted_certificate '${{LUA_SSL_TRUSTED_CERTIFICATE}}';
+lua_ssl_verify_depth ${{LUA_SSL_VERIFY_DEPTH}};
+> end
 
 # injected nginx_http_* directives
-lua_shared_dict prometheus_metrics 5m;
+> for _, el in ipairs(nginx_http_directives)  do
+$(el.name) $(el.value);
+> end
 
 init_by_lua_block {
     Kong = require 'kong'
@@ -161,28 +120,31 @@ init_worker_by_lua_block {
 }
 
 
+> if #proxy_listeners > 0 then
 upstream kong_upstream {
     server 0.0.0.1;
     balancer_by_lua_block {
         Kong.balancer()
     }
-    keepalive 60;
+    keepalive ${{UPSTREAM_KEEPALIVE}};
 }
 
 server {
     server_name kong;
-    listen 0.0.0.0:8000 backlog=16384 bind so_keepalive=on default_server;
-    listen 0.0.0.0:8443 ssl backlog=16384 bind so_keepalive=on http2 default_server;
+> for i = 1, #proxy_listeners do
+    listen $(proxy_listeners[i].listener) backlog=16384 reuseport fastopen=4096 bind so_keepalive=on;
+> end
     error_page 400 404 408 411 412 413 414 417 494 /kong_error_handler;
     error_page 500 502 503 504 /kong_error_handler;
 
-    access_log /dev/stdout;
-    error_log /dev/stderr notice;
+    access_log ${{PROXY_ACCESS_LOG}};
+    error_log ${{PROXY_ERROR_LOG}} ${{LOG_LEVEL}};
 
-    client_body_buffer_size 8k;
+    client_body_buffer_size ${{CLIENT_BODY_BUFFER_SIZE}};
 
-    ssl_certificate /usr/local/kong/ssl/kong-default.crt;
-    ssl_certificate_key /usr/local/kong/ssl/kong-default.key;
+> if proxy_ssl_enabled then
+    ssl_certificate ${{SSL_CERT}};
+    ssl_certificate_key ${{SSL_CERT_KEY}};
     ssl_protocols TLSv1.1 TLSv1.2;
     ssl_certificate_by_lua_block {
         Kong.ssl_certificate()
@@ -191,13 +153,24 @@ server {
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
     ssl_prefer_server_ciphers on;
-    ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256;
+    ssl_ciphers ${{SSL_CIPHERS}};
+> end
 
+> if client_ssl then
+    proxy_ssl_certificate ${{CLIENT_SSL_CERT}};
+    proxy_ssl_certificate_key ${{CLIENT_SSL_CERT_KEY}};
+> end
 
-    real_ip_header     X-Real-IP;
-    real_ip_recursive  off;
+    real_ip_header     ${{REAL_IP_HEADER}};
+    real_ip_recursive  ${{REAL_IP_RECURSIVE}};
+> for i = 1, #trusted_ips do
+    set_real_ip_from   $(trusted_ips[i]);
+> end
 
     # injected nginx_proxy_* directives
+> for _, el in ipairs(nginx_proxy_directives)  do
+    $(el.name) $(el.value);
+> end
 
     location / {
         default_type                     '';
@@ -269,4 +242,53 @@ server {
         }
     }
 }
+> end
 
+> if #admin_listeners > 0 then
+server {
+    server_name kong_admin;
+> for i = 1, #admin_listeners do
+    listen $(admin_listeners[i].listener);
+> end
+
+    access_log ${{ADMIN_ACCESS_LOG}};
+    error_log ${{ADMIN_ERROR_LOG}} ${{LOG_LEVEL}};
+
+    client_max_body_size 10m;
+    client_body_buffer_size 10m;
+
+> if admin_ssl_enabled then
+    ssl_certificate ${{ADMIN_SSL_CERT}};
+    ssl_certificate_key ${{ADMIN_SSL_CERT_KEY}};
+    ssl_protocols TLSv1.1 TLSv1.2;
+
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ${{SSL_CIPHERS}};
+> end
+
+    # injected nginx_admin_* directives
+> for _, el in ipairs(nginx_admin_directives)  do
+    $(el.name) $(el.value);
+> end
+
+    location / {
+        default_type application/json;
+        content_by_lua_block {
+            Kong.serve_admin_api()
+        }
+    }
+
+    location /nginx_status {
+        internal;
+        access_log off;
+        stub_status;
+    }
+
+    location /robots.txt {
+        return 200 'User-agent: *\nDisallow: /';
+    }
+}
+> end
+]]

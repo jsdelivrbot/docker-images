@@ -1,27 +1,29 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
+  name: resin
+  namespace: default
   labels:
-    app: jenkins
-  name: jenkins
-  namespace: ci
+    app: resin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jenkins
-  serviceName: jenkins
+      app: resin
+#  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
+  strategy:
+    rollingUpdate:  ##由于replicas为3,则整个升级,pod个数在2-4个之间
+      maxSurge: 1      #滚动升级时会先启动1个pod
+      maxUnavailable: 1 #滚动升级时允许的最大Unavailable的pod个数
   template:
     metadata:
       labels:
-        app: jenkins
-      name: jenkins
-      annotations:
-        #disable istio sidecar injection
-        sidecar.istio.io/inject: "false"
+        app: resin
     spec:
+      terminationGracePeriodSeconds: 60 ##k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+      #imagePullSecrets:
+      #- name: registrykey-ali-ext
       securityContext:
-        fsGroup: 1000
         sysctls:
           #kubernetes >= v1.11 and kernel version >= 4.15 needed
           #- name: kernel.msgmax
@@ -77,60 +79,36 @@ spec:
           - name: net.ipv4.fwmark_reflect
             value: "1"
       containers:
-      - image: slpcat/kube-jenkins-service
+      - name: resin
+        #image: registry.cn-beijing.aliyuncs.com/example/example_web:${BUILD_NUMBER}
+        image: slpcat/resin:centos7
         imagePullPolicy: Always
-        livenessProbe:
-          failureThreshold: 3
+        livenessProbe: #kubernetes认为该pod是存活的,不存活则需要重启
           httpGet:
-            path: /login
+            path: /
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          successThreshold: 1
+          initialDelaySeconds: 60 ## equals to the maximum startup time of the application + couple of seconds
           timeoutSeconds: 5
-        name: jenkins
-        ports:
-        - containerPort: 8080
-          name: web
-          protocol: TCP
-        - containerPort: 50000
-          name: agent
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
+          successThreshold: 1
+          failureThreshold: 5
+        readinessProbe: #kubernetes认为该pod是启动成功的
           httpGet:
-            path: /login
+            path: /
             port: 8080
             scheme: HTTP
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          successThreshold: 1
+          initialDelaySeconds: 30 ## equals to minimum startup time of the application
           timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
         resources:
-          limits:
-            cpu: "4"
-            memory: 4Gi
+          # keep request = limit to keep this container in guaranteed class
           requests:
             cpu: 500m
             memory: 512Mi
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /var/jenkins_home
-          name: jenkinshome
-      #imagePullSecrets:
-      #- name: myregistrykey
-      restartPolicy: Always
-      serviceAccount: jenkins
-  volumeClaimTemplates:
-  - metadata:
-      name: jenkinshome
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      #ceph rbd storageclass
-      #storageClassName: rbd
-      resources:
-        requests:
-          storage: 60Gi
+          limits:
+            cpu: 4
+            memory: 8Gi
+        ports:
+          - name: http
+            containerPort: 8080

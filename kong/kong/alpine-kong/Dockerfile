@@ -18,7 +18,9 @@ RUN apk add --no-cache --virtual .build-deps wget tar ca-certificates \
 	&& apk del .build-deps
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY *.conf /usr/local/kong/
+COPY nginx.lua /usr/local/share/lua/5.1/kong/templates/nginx.lua
+COPY nginx_kong.lua /usr/local/share/lua/5.1/kong/templates/nginx_kong.lua
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 8000 8443 8001 8444

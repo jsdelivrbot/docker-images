@@ -4,7 +4,7 @@ metadata:
   labels:
       app: jenkins
   name: jenkins
-  namespace: default
+  namespace: ci
 spec:
   ports:
   - port: 8080

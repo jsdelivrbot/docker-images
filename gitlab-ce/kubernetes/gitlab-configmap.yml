@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gitlab-etc-configmap
-  namespace: default
+  namespace: ci
 data:
   gitlab.rb: |-
     external_url 'http://git.example.com'

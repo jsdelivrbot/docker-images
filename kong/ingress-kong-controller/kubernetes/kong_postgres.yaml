@@ -74,7 +74,8 @@ spec:
       containers:
       - name: kong
         #image: kong:0.14.1-centos
-        image: kong:0.14.1-alpine
+        image: slpcat/kong:0.14.1-alpine
+        imagePullPolicy: Always
         env:
           - name: KONG_ADMIN_LISTEN
             value: 'off'
@@ -100,6 +101,18 @@ spec:
             value: "/dev/stderr"
           - name: KONG_ADMIN_ERROR_LOG
             value: "/dev/stderr"
+          - name: KONG_ANONYMOUS_REPORTS
+            value: "off"
+          - name: KONG_HEADERS
+            value: "off"
+          - name: KONG_CLIENT_MAX_BODY_SIZE
+            value: "0"
+          #- name: KONG_WORKER_CONNECTIONS
+          #  value: "20000"
+          - name: KONG_CLIENT_BODY_BUFFER_SIZE
+            value: "8m"
+          - name: KONG_PROXY_LISTEN
+            value: "0.0.0.0:8000, 0.0.0.0:8443 ssl http2"
         ports:
         - name: proxy
           containerPort: 8000
