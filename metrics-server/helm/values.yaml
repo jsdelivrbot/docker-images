@@ -18,7 +18,8 @@ apiService:
   create: true
 
 image:
-  repository: gcr.io/google_containers/metrics-server-amd64
+  #repository: gcr.io/google_containers/metrics-server-amd64
+  repository: slpcat/metrics-server-amd64
   tag: v0.3.0
   pullPolicy: IfNotPresent
 
