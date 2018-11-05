@@ -7,7 +7,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: clair
 spec:
-  replicas: {{ .Values.clair.replicas }}
+  replicas: 1
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -21,7 +21,7 @@ spec:
       containers:
       - name: clair
         image: {{ .Values.clair.image.repository }}:{{ .Values.clair.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.clair.image.pullPolicy }}
         args: ["-insecure-tls", "-config", "/etc/clair/config.yaml"]
         resources:
 {{ toYaml .Values.clair.resources | indent 10 }}

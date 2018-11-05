@@ -21,7 +21,7 @@ spec:
     spec:
       initContainers:
       - name: "remove-lost-found"
-        image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
+        image: "busybox:1.25.0"
         command: ["rm", "-Rf", "/var/lib/postgresql/data/lost+found"]
         volumeMounts:
         - name: database-data
@@ -29,7 +29,7 @@ spec:
       containers:
       - name: database
         image: {{ .Values.database.internal.image.repository }}:{{ .Values.database.internal.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.database.internal.image.pullPolicy }}
         resources:
 {{ toYaml .Values.database.internal.resources | indent 10 }}
         envFrom:
@@ -42,11 +42,6 @@ spec:
       volumes:
       - name: "database-data"
         emptyDir: {}
-      {{- else if .Values.database.internal.volumes.data.existingClaim }}
-      volumes:
-      - name: "database-data"
-        persistentVolumeClaim:
-          claimName: {{ .Values.database.internal.volumes.data.existingClaim }}
       {{- end -}}
     {{- with .Values.database.internal.nodeSelector }}
       nodeSelector:
@@ -60,7 +55,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- if and .Values.persistence.enabled (not .Values.database.internal.volumes.data.existingClaim) }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: "database-data"

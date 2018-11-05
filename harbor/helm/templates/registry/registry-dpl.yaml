@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: registry
 spec:
-  replicas: {{ .Values.registry.replicas }}
+  replicas: 1
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -19,21 +19,74 @@ spec:
     spec:
       containers:
       - name: registry
-        image: {{ .Values.registry.registry.image.repository }}:{{ .Values.registry.registry.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: {{ .Values.registry.image.repository }}:{{ .Values.registry.image.tag }}
+        imagePullPolicy: {{ .Values.registry.image.pullPolicy }}
         resources:
 {{ toYaml .Values.registry.resources | indent 10 }}
         args: ["serve", "/etc/registry/config.yml"]
-        envFrom:
-        - secretRef:
-            name: "{{ template "harbor.fullname" . }}-registry"
+        env:
+          - name: REGISTRY_HTTP_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: httpSecret
+          {{- $storage := .Values.registry.storage }}
+          {{- $type := $storage.type }}
+          {{- if eq $type "azure" }}
+          - name: REGISTRY_STORAGE_AZURE_ACCOUNTKEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: accountkey
+          {{- else if eq $type "s3" }}
+          {{- if $storage.s3.accesskey }}
+          - name: REGISTRY_STORAGE_S3_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: accesskey
+          {{- end }}
+          {{- if $storage.s3.secretkey }}
+          - name: REGISTRY_STORAGE_S3_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: secretkey
+          {{- end }}
+          {{- else if eq $type "swift" }}
+          - name: REGISTRY_STORAGE_SWIFT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: password
+          {{- if $storage.swift.secretkey }}
+          - name: REGISTRY_STORAGE_SWIFT_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: secretkey
+          {{- end }}
+          {{- if $storage.swift.accesskey }}
+          - name: REGISTRY_STORAGE_SWIFT_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: accesskey
+          {{- end }}
+          {{- else if eq $type "oss" }}
+          - name: REGISTRY_STORAGE_OSS_ACCESSKEYSECRET
+            valueFrom:
+              secretKeyRef:
+                name: "{{ template "harbor.fullname" . }}-registry"
+                key: accesskeysecret
+          {{- end }}
         ports:
         - containerPort: 5000
         - containerPort: 5001
         volumeMounts:
-        {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
+        {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
         - name: registry-data
-          mountPath: {{ .Values.storage.filesystem.rootdirectory }}
+          mountPath: {{ .Values.registry.storage.filesystem.rootdirectory }}
         {{- end }}
         - name: registry-root-certificate
           mountPath: /etc/registry/root.crt
@@ -41,47 +94,14 @@ spec:
         - name: registry-config
           mountPath: /etc/registry/config.yml
           subPath: config.yml
-      - name: registryctl
-        image: {{ .Values.registry.controller.image.repository }}:{{ .Values.registry.controller.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
-        resources:
-{{ toYaml .Values.registry.resources | indent 10 }}
-        args: ["serve", "/etc/registry/config.yml"]
-        envFrom:
-        - secretRef:
-            name: "{{ template "harbor.fullname" . }}-registry"
-        env:
-          - name: CORE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "harbor.core" . }}
-                key: secret
-          - name: JOBSERVICE_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: "{{ template "harbor.fullname" . }}-jobservice"
-                key: secret
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
-        - name: registry-data
-          mountPath: {{ .Values.storage.filesystem.rootdirectory }}
-        {{- end }}
-        - name: registry-config
-          mountPath: /etc/registry/config.yml
-          subPath: config.yml
-        - name: registry-config
-          mountPath: /etc/registryctl/config.yml
-          subPath: ctl-config.yml
       volumes:
       - name: registry-root-certificate
         secret:
-          secretName: {{ template "harbor.core" . }}
+          secretName: "{{ template "harbor.fullname" . }}-ui"
       - name: registry-config
         configMap:
           name: "{{ template "harbor.fullname" . }}-registry"
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
+      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
       - name: registry-data
         persistentVolumeClaim:
           claimName: {{ .Values.registry.volumes.data.existingClaim | default (printf "%s-registry" (include "harbor.fullname" .)) }}  

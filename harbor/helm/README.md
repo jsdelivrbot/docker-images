@@ -23,13 +23,17 @@ Checkout the branch.
 cd harbor-helm
 git checkout branch_name
 ```
+Download external dependent charts required by Harbor chart.
+```bash
+helm dependency update
+```
 Install the Harbor helm chart with a release name `my-release`:
 ```bash
 helm install --name my-release .
 ```
 
 The command deploys Harbor on the Kubernetes cluster with the default configuration.
-The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via `--set` flag during installation.
+The [configuration](#configuration) section lists the parameters that can be configured in values.yaml or via '--set' flag during installation.
 
 ## Uninstalling the Chart
 
@@ -59,20 +63,11 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `ingress.hosts.notary` | The host of Harbor notary service in ingress rule | `notary.harbor.domain` |
 | `ingress.annotations` | The annotations used in ingress | `true` |
 | `ingress.tls.enabled` | Enable TLS | `true` |
-| `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty |
-| `ingress.tls.notarySecretName` | Fill the notarySecretName if you want to use the certificate of yourself when Notary serves with HTTPS. if left empty, it uses the `ingress.tls.secretName` value |
-| **Portal** |
-| `portal.image.repository` | Repository for portal image | `goharbor/harbor-portal` |
-| `portal.image.tag` | Tag for portal image | `dev` |
-| `portal.replicas` | The replica count | `1` |
-| `portal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
-| `portal.nodeSelector` | Node labels for pod assignment | `{}` |
-| `portal.tolerations` | Tolerations for pod assignment | `[]` |
-| `portal.affinity` | Node/Pod affinities | `{}` |
+| `ingress.tls.secretName` | Fill the secretName if you want to use the certificate of yourself when Harbor serves with HTTPS. A certificate will be generated automatically by the chart if leave it empty | |
 | **Adminserver** |
 | `adminserver.image.repository` | Repository for adminserver image | `goharbor/harbor-adminserver` |
 | `adminserver.image.tag` | Tag for adminserver image | `dev` |
-| `adminserver.replicas` | The replica count | `1` |
+| `adminserver.image.pullPolicy` | Pull Policy for adminserver image | `IfNotPresent` |
 | `adminserver.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `adminserver.nodeSelector` | Node labels for pod assignment | `{}` |
 | `adminserver.tolerations` | Tolerations for pod assignment | `[]` |
@@ -80,26 +75,26 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | **Jobservice** |
 | `jobservice.image.repository` | Repository for jobservice image | `goharbor/harbor-jobservice` |
 | `jobservice.image.tag` | Tag for jobservice image | `dev` |
-| `jobservice.replicas` | The replica count | `1` |
-| `jobservice.volumes` | The volume used to store data if persistence is enabled | |
+| `jobservice.image.pullPolicy` | Pull Policy for jobservice image | `IfNotPresent` |
 | `jobservice.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `jobservice.nodeSelector` | Node labels for pod assignment | `{}` |
 | `jobservice.tolerations` | Tolerations for pod assignment | `[]` |
 | `jobservice.affinity` | Node/Pod affinities | `{}` |
-| **Core** |
-| `core.image.repository` | Repository for Harbor core image | `goharbor/harbor-core` |
-| `core.image.tag` | Tag for Harbor core image | `dev` |
-| `core.replicas` | The replica count | `1` |
-| `core.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
-| `core.nodeSelector` | Node labels for pod assignment | `{}` |
-| `core.tolerations` | Tolerations for pod assignment | `[]` |
-| `core.affinity` | Node/Pod affinities | `{}` |
+| **UI** |
+| `ui.image.repository` | Repository for ui image | `goharbor/harbor-ui` |
+| `ui.image.tag` | Tag for ui image | `dev` |
+| `ui.image.pullPolicy` | Pull Policy for ui image | `IfNotPresent` |
+| `ui.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `ui.nodeSelector` | Node labels for pod assignment | `{}` |
+| `ui.tolerations` | Tolerations for pod assignment | `[]` |
+| `ui.affinity` | Node/Pod affinities | `{}` |
 | **Database** |
 | `database.type` | If external database is used, set it to `external` | `internal` |
 | `database.internal.image.repository` | Repository for database image | `goharbor/harbor-db` |
 | `database.internal.image.tag` | Tag for database image | `dev` |
+| `database.internal.image.pullPolicy` | Pull Policy for database image | `IfNotPresent` |
 | `database.internal.password` | The password for database | `changeit` |
-| `database.internal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
+| `database.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `database.internal.volumes` | The volume used to persistent data |
 | `database.internal.nodeSelector` | Node labels for pod assignment | `{}` |
 | `database.internal.tolerations` | Tolerations for pod assignment | `[]` |
@@ -114,12 +109,11 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `database.external.notaryServerDatabase` | The database used by Notary server | `notary_server` |
 | `database.external.notarySignerDatabase` | The database used by Notary signer | `notary_signer` |
 | **Registry** |
-| `registry.registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
-| `registry.registry.image.tag` | Tag for registry image | `dev` |
-| `registry.registry.logLevel` | The log level | `info` |
-| `registry.controller.image.repository` | Repository for registry controller image | `goharbor/harbor-registryctl` |
-| `registry.controller.image.tag` | Tag for registry controller image | `dev` |
-| `registry.replicas` | The replica count | `1` |
+| `registry.image.repository` | Repository for registry image | `goharbor/registry-photon` |
+| `registry.image.tag` | Tag for registry image | `dev` |
+| `registry.image.pullPolicy` | Pull Policy for registry image | `IfNotPresent` |
+| `registry.logLevel` | The log level | `info` |
+| `registry.storage.type` | The storage used to store images: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `registry.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `registry.nodeSelector` | Node labels for pod assignment | `{}` |
@@ -129,48 +123,37 @@ The following tables lists the configurable parameters of the Harbor chart and t
 | `chartmuseum.enabled` | Enable chartmusuem to store chart | `true` |
 | `chartmuseum.image.repository` | Repository for chartmuseum image | `goharbor/chartmuseum-photon` |
 | `chartmuseum.image.tag` | Tag for chartmuseum image | `dev` |
-| `chartmuseum.replicas` | The replica count | `1` |
+| `chartmuseum.image.pullPolicy` | Pull Policy for chartmuseum image | `IfNotPresent` |
 | `chartmuseum.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | `chartmuseum.volumes` | used to create PVCs if persistence is enabled (see instructions in values.yaml) | see values.yaml |
 | `chartmuseum.nodeSelector` | Node labels for pod assignment | `{}` |
 | `chartmuseum.tolerations` | Tolerations for pod assignment | `[]` |
 | `chartmuseum.affinity` | Node/Pod affinities | `{}` |
-| **Storage For Registry And Chartmuseum** |
-| `storage.type` | The storage backend used for registry and chartmuseum: `filesystem`, `azure`, `gcs`, `s3`, `swift`, `oss` | `filesystem` |
-| `other values` | The other values please refer to https://github.com/docker/distribution/blob/master/docs/configuration.md#storage |  |
 | **Clair** |
 | `clair.enabled` | Enable Clair? | `true` |
 | `clair.image.repository` | Repository for clair image | `goharbor/clair-photon` |
 | `clair.image.tag` | Tag for clair image | `dev`
-| `clair.replicas` | The replica count | `1` |
 | `clair.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined
 | `clair.nodeSelector` | Node labels for pod assignment | `{}` |
 | `clair.tolerations` | Tolerations for pod assignment | `[]` |
 | `clair.affinity` | Node/Pod affinities | `{}` |
 | **Redis** |
-| `redis.type` | If external redis is used, set it to `external` | `internal` |
-| `redis.internal.image.repository` | Repository for redis image | `goharbor/redis-photon` |
-| `redis.internal.image.tag` | Tag for redis image | `dev` |
-| `redis.internal.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
-| `redis.internal.volumes` | The volume used to persistent data |
-| `redis.internal.nodeSelector` | Node labels for pod assignment | `{}` |
-| `redis.internal.tolerations` | Tolerations for pod assignment | `[]` |
-| `redis.internal.affinity` | Node/Pod affinities | `{}` |
+| `redis.usePassword` | Whether use password | `false` |
+| `redis.password` | The password for Redis | `changeit` |
+| `redis.cluster.enabled` | Enable Redis cluster | `false` |
+| `redis.master.persistence.enabled` | Persistent data   | `true` |
+| `redis.external.enabled` | If an external Redis is used, set it to `true` | `false` |
 | `redis.external.host` | The hostname of external Redis | `192.168.0.2` |
 | `redis.external.port` | The port of external Redis | `6379` |
-| `redis.external.coreDatabaseIndex` | The database index for core | `0` |
-| `redis.external.jobserviceDatabaseIndex` | The database index for jobservice | `1` |
-| `redis.external.registryDatabaseIndex` | The database index for registry | `2` |
-| `redis.external.chartmuseumDatabaseIndex` | The database index for chartmuseum | `3` |
-| `redis.external.password` | The password of external Redis | |
+| `redis.external.databaseIndex` | The database index of external Redis | `0` |
+| `redis.external.usePassword` | Whether use password for external Redis | `false` |
+| `redis.external.password` | The password of external Redis | `changeit` |
 | **Notary** |
 | `notary.enabled` | Enable Notary? | `true` |
 | `notary.server.image.repository` | Repository for notary server image | `goharbor/notary-server-photon` |
 | `notary.server.image.tag` | Tag for notary server image | `dev`
-| `notary.server.replicas` | The replica count | `1` |
 | `notary.signer.image.repository` | Repository for notary signer image | `goharbor/notary-signer-photon` |
 | `notary.signer.image.tag` | Tag for notary signer image | `dev`
-| `notary.signer.replicas` | The replica count | `1` |
 | `notary.nodeSelector` | Node labels for pod assignment | `{}` |
 | `notary.tolerations` | Tolerations for pod assignment | `[]` |
 | `notary.affinity` | Node/Pod affinities | `{}` |

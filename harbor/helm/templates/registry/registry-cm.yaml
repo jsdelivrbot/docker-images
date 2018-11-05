@@ -12,7 +12,7 @@ data:
       fields:
         service: registry
     storage:
-      {{- $storage := .Values.storage }}
+      {{- $storage := .Values.registry.storage }}
       {{- $type := $storage.type }}
       {{- if eq $type "filesystem" }}
       filesystem:
@@ -138,8 +138,8 @@ data:
         enabled: true
     redis:
       addr: "{{ template "harbor.redis.host" . }}:{{ template "harbor.redis.port" . }}"
-      password: {{ template "harbor.redis.rawPassword" . }}
-      db: {{ template "harbor.redis.registryDatabaseIndex" . }}
+      password: {{ template "harbor.redis.password" . }}
+      db: {{ template "harbor.redis.databaseIndex" . }}
     http:
       addr: :5000
       # set via environment variable
@@ -156,12 +156,7 @@ data:
       endpoints:
         - name: harbor
           disabled: false
-          url: http://{{ template "harbor.core" . }}/service/notifications
+          url: http://{{ template "harbor.fullname" . }}-ui/service/notifications
           timeout: 3000ms
           threshold: 5
           backoff: 1s
-  ctl-config.yml: |+
-    ---
-    protocol: "http"
-    port: 8080
-    log_level: "INFO"

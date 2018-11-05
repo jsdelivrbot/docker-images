@@ -12,15 +12,9 @@ spec:
   tls:
   - hosts:
     - {{ .Values.ingress.hosts.core }}
+    - {{ .Values.ingress.hosts.notary }}
     {{- if .Values.ingress.tls.secretName }}
     secretName: {{ .Values.ingress.tls.secretName }}
-    {{- else }}
-    secretName: "{{ template "harbor.fullname" . }}-ingress"
-    {{- end }}
-  - hosts:
-    - {{ .Values.ingress.hosts.notary }}
-    {{- if .Values.ingress.tls.notarySecretName }}
-    secretName: {{ .Values.ingress.tls.notarySecretName }}
     {{- else }}
     secretName: "{{ template "harbor.fullname" . }}-ingress"
     {{- end }}
@@ -31,27 +25,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "harbor.portal" . }}
-          servicePort: 80
-      - path: /api/
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /service/
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /v2/
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /chartrepo/
-        backend:
-          serviceName: {{ template "harbor.core" . }}
-          servicePort: 80
-      - path: /c/
-        backend:
-          serviceName: {{ template "harbor.core" . }}
+          serviceName: {{ template "harbor.fullname" . }}-ui
           servicePort: 80
   {{- if .Values.notary.enabled }}
   - host: {{ .Values.ingress.hosts.notary }}

@@ -7,7 +7,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: chartmuseum
 spec:
-  replicas: {{ .Values.chartmuseum.replicas }}
+  replicas: 1
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -21,7 +21,7 @@ spec:
       containers:
       - name: chartmuseum
         image: {{ .Values.chartmuseum.image.repository }}:{{ .Values.chartmuseum.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.chartmuseum.image.pullPolicy }}
         resources:
 {{ toYaml .Values.chartmuseum.resources | indent 10 }}
         envFrom:
@@ -33,11 +33,12 @@ spec:
           - name: BASIC_AUTH_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: "{{ template "harbor.fullname" . }}-ui"
                 key: secret
         ports:
         - containerPort: 9999
-      {{- if and .Values.persistence.enabled (eq .Values.storage.type "filesystem") }}
+        # TODO: update it after moving the storage out of registry scope
+      {{- if (.Values.persistence.enabled) and eq .Values.registry.storage.type "filesystem" }}
         volumeMounts:
         - name: chartmuseum-data
           mountPath: /chart_storage

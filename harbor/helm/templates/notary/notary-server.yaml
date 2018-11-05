@@ -7,7 +7,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: notary-server
 spec:
-  replicas: {{ .Values.notary.server.replicas }}
+  replicas: 1
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -21,7 +21,7 @@ spec:
       containers:
       - name: notary-server
         image: {{ .Values.notary.server.image.repository }}:{{ .Values.notary.server.image.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.notary.server.image.pullPolicy }}
         resources:
 {{ toYaml .Values.notary.server.resources | indent 10 }}
         env:
@@ -41,7 +41,7 @@ spec:
           name: "{{ template "harbor.fullname" . }}-notary"
       - name: root-certificate
         secret:
-          secretName: {{ template "harbor.core" . }}
+          secretName: "{{ template "harbor.fullname" . }}-ui"
     {{- with .Values.notary.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

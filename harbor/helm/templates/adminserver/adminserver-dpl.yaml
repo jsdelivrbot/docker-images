@@ -6,7 +6,7 @@ metadata:
 {{ include "harbor.labels" . | indent 4 }}
     component: adminserver
 spec:
-  replicas: {{ .Values.adminserver.replicas }}
+  replicas: 1
   selector:
     matchLabels:
 {{ include "harbor.matchLabels" . | indent 6 }}
@@ -20,7 +20,7 @@ spec:
       containers:
       - name: adminserver
         image: "{{ .Values.adminserver.image.repository }}:{{ .Values.adminserver.image.tag }}"
-        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        imagePullPolicy: "{{ .Values.adminserver.image.pullPolicy }}"
         resources:
 {{ toYaml .Values.adminserver.resources | indent 10 }}
         envFrom:
@@ -35,10 +35,10 @@ spec:
             value: /etc/adminserver/config/config.json
           - name: KEY_PATH
             value: /etc/adminserver/key
-          - name: CORE_SECRET
+          - name: UI_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "harbor.core" . }}
+                name: "{{ template "harbor.fullname" . }}-ui"
                 key: secret
           - name: JOBSERVICE_SECRET
             valueFrom:
