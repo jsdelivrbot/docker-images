@@ -7,7 +7,7 @@ kubernetes网络方案推荐使用cilium,支持vxlan,bgp以及eBPF引擎
 代码仓库: gitlab-ce,gogs
 代码审核: gerrit
 持续集成/发布: jenkins,spinnaker,gitlab-ci,drone
-测试: chaos-monkey,chaoskube,k8s-testsuite,test-infra,sonobuoy,PowerfulSeal,
+测试: chaos-monkey,chaoskube,k8s-testsuite,test-infra,sonobuoy,PowerfulSeal
 artifactory仓库: nexus2,nexus3,harbor,registry
 helm应用商店: chartmuseum,kubeapps
 分布式存储: ceph,minio
@@ -27,8 +27,8 @@ NewSQL数据库: TiDB,cockroachdb
 微服务框架/组件: istio,dubbo,dubbokeeper,kong,kong-dashboard,consul,openlambda
 FAAS: fission,fnproject,funktion,kubeless,nuclio,open-lambda,openfaas,openwhisk,vmware-dispatch
 日志集群: elastic-stack(elasticsearch+cerebro+kibana)
-日志采集: logstash,filebeat,logtail
-监控/APM: appdash,apm-server,cadvisor,heapster,kube-state-metrics,metrics-server,prometheus,pinpoint,jaeger,zipkin,skywalking,kubewatch,searchlight,
+日志采集: logstash,filebeat,logtail,log-pilot,logspout,auditbeat
+监控/APM: appdash,apm-server,cadvisor,heapster,kube-state-metrics,metrics-server,prometheus,pinpoint,jaeger,zipkin,skywalking,kubewatch,searchlight
 动态性能追踪: bcc-tools,systemtap,sysdig
 kubernetes可视化管理工具: kubernetes-dashboard,weavescope,kubebox,kubedash,kube-ops-view,cabin
 kubernetes灾难恢复: ark
