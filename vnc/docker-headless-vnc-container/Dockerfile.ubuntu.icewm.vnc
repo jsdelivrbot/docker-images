@@ -41,6 +41,12 @@ LABEL io.k8s.description="Headless VNC Container with IceWM window manager, fire
       io.openshift.tags="vnc, ubuntu, icewm" \
       io.openshift.non-scalable=true
 
+ARG KUBECTL_VERSION=v1.12.2
+# Install kubectl
+RUN \
+  wget -O /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+  chmod +x /usr/local/bin/kubectl
+
 ## Connection ports for controlling the UI:
 # VNC port:5901
 # noVNC webport, connect via http://IP:6901/?password=vncpassword
