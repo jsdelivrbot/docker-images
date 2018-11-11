@@ -1,13 +1,14 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: php-apache
+  annotations:
+  name: tomcat8
   namespace: default
 spec:
-  scaleTargetRef:
-    apiVersion: v1
-    kind: Deployment
-    name: php-apache-cpu
-  minReplicas: 1
   maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: tomcat8
   targetCPUUtilizationPercentage: 50
