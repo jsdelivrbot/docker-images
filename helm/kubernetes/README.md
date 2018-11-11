@@ -9,6 +9,10 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 
 请执行如下命令利用阿里云的镜像来配置 Helm
 helm init --upgrade -i slpcat/tiller:v2.8.2 --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+2.11安装
+https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+helm init --upgrade -i slpcat/tiller:v2.11.0 --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+#helm init --canary-image --tiller-image 
 helm search
 若要更新charts列表以获取最新版本
 helm repo update 
