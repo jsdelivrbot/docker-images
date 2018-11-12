@@ -33,6 +33,15 @@ RUN \
 RUN \
     apt-get dist-upgrade -y
 
+RUN \
+    apt-get install -y sudo openssh-client
+
+ARG KUBECTL_VERSION=v1.12.2
+# Install kubectl
+RUN \
+  wget -O /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+  chmod +x /usr/local/bin/kubectl
+
 ENV REFRESHED_AT 2018-03-27
 
 LABEL io.k8s.description="Headless VNC Container with Xfce window manager, firefox and chromium" \
@@ -86,7 +95,8 @@ ADD ./src/common/xfce/ $HOME/
 ### configure startup
 RUN $INST_SCRIPTS/libnss_wrapper.sh
 ADD ./src/common/scripts $STARTUPDIR
-RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME
+RUN $INST_SCRIPTS/set_user_permission.sh $STARTUPDIR $HOME \
+    && usermod -G sudo -a default
 
 USER 1000
 
