@@ -10361,11 +10361,7 @@ metadata:
     istio: security
 data:
   custom-resources.yaml: |-    
-    # These policy and destination rules effectively enable mTLS for all services in the mesh. For now,
-    # they are added to Istio installation yaml for backward compatible. In future, they should be in
-    # a separated yaml file so that customer can enable mTLS independent from installation.
-    
-    # Authentication policy to enable mutual TLS for all services (that have sidecar) in the mesh.
+    # Authentication policy to enable permissive mode for all services (that have sidecar) in the mesh.
     apiVersion: "authentication.istio.io/v1alpha1"
     kind: "MeshPolicy"
     metadata:
@@ -10377,41 +10373,8 @@ data:
         heritage: Tiller
     spec:
       peers:
-      - mtls: {}
-    ---
-    # Corresponding destination rule to configure client side to use mutual TLS when talking to
-    # any service (host) in the mesh.
-    apiVersion: networking.istio.io/v1alpha3
-    kind: DestinationRule
-    metadata:
-      name: "default"
-      labels:
-        app: istio-security
-        chart: security-1.0.3
-        release: istio
-        heritage: Tiller
-    spec:
-      host: "*.local"
-      trafficPolicy:
-        tls:
-          mode: ISTIO_MUTUAL
-    ---
-    # Destination rule to dislabe (m)TLS when talking to API server, as API server doesn't have sidecar.
-    # Customer should add similar destination rules for other services that dont' have sidecar.
-    apiVersion: networking.istio.io/v1alpha3
-    kind: DestinationRule
-    metadata:
-      name: "api-server"
-      labels:
-        app: istio-security
-        chart: security-1.0.3
-        release: istio
-        heritage: Tiller
-    spec:
-      host: "kubernetes.default.svc.cluster.local"
-      trafficPolicy:
-        tls:
-          mode: DISABLE
+      - mtls:
+          mode: PERMISSIVE
   run.sh: |-    
     #!/bin/sh
     
@@ -10471,8 +10434,8 @@ data:
     accessLogFile: "/dev/stdout"
     #
     # Deprecated: mixer is using EDS
-    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:15004
-    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:15004
+    mixerCheckServer: istio-policy.istio-system.svc.cluster.local:9091
+    mixerReportServer: istio-telemetry.istio-system.svc.cluster.local:9091
 
     # policyCheckFailOpen allows traffic in cases when the mixer policy service cannot be reached.
     # Default is false which means the traffic is denied when the client is unable to connect to Mixer.
@@ -10531,10 +10494,10 @@ data:
       zipkinAddress: zipkin.istio-system:9411
       #
       # Mutual TLS authentication between sidecars and istio control plane.
-      controlPlaneAuthPolicy: MUTUAL_TLS
+      controlPlaneAuthPolicy: NONE
       #
       # Address where istio Pilot service is running
-      discoveryAddress: istio-pilot.istio-system:15005
+      discoveryAddress: istio-pilot.istio-system:15007
 
 ---
 # Source: istio/templates/sidecar-injector-configmap.yaml
@@ -10555,10 +10518,6 @@ data:
     policy: enabled
     template: |-
       initContainers:
-      - name: sleep
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ['sh', '-c', 'sleep 10']
       - name: istio-init
         image: "docker.io/istio/proxy_init:1.0.3"
         args:
@@ -10585,8 +10544,7 @@ data:
         restartPolicy: Always
       containers:
       - name: istio-proxy
-        docker.io/cilium/istio_proxy_debug:1.0.3
-        
+        image: [[ annotation .ObjectMeta `sidecar.istio.io/proxyImage`  "docker.io/istio/proxyv2:1.0.3"  ]]
 
         ports:
         - containerPort: 15090
@@ -10692,17 +10650,12 @@ data:
           
         [[ end -]]
         volumeMounts:
-        - mountPath: /var/run/cilium
-          name: cilium-unix-sock-dir
         - mountPath: /etc/istio/proxy
           name: istio-envoy
         - mountPath: /etc/certs/
           name: istio-certs
           readOnly: true
       volumes:
-      - hostPath:
-          path: /var/run/cilium
-        name: cilium-unix-sock-dir
       - emptyDir:
           medium: Memory
         name: istio-envoy
@@ -13089,7 +13042,7 @@ spec:
       serviceAccountName: istio-egressgateway-service-account
       containers:
         - name: istio-proxy
-          image: "docker.io/istio/proxy_debug:1.0.3"
+          image: "docker.io/istio/proxyv2:1.0.3"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -13119,9 +13072,9 @@ spec:
           - --proxyAdminPort
           - "15000"
           - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
+          - NONE
           - --discoveryAddress
-          - istio-pilot:15005
+          - istio-pilot:8080
           resources:
             requests:
               cpu: 10m
@@ -13228,7 +13181,7 @@ spec:
       serviceAccountName: istio-ingressgateway-service-account
       containers:
         - name: istio-proxy
-          image: "docker.io/istio/proxy_debug:1.0.3"
+          image: "docker.io/istio/proxyv2:1.0.3"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -13264,9 +13217,9 @@ spec:
           - --proxyAdminPort
           - "15000"
           - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
+          - NONE
           - --discoveryAddress
-          - istio-pilot:15005
+          - istio-pilot:8080
           resources:
             requests:
               cpu: 10m
@@ -13610,7 +13563,7 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       - name: istio-proxy
-        image: "docker.io/istio/proxyv2:1.0.2"
+        image: "docker.io/istio/proxyv2:1.0.3"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9091
@@ -13628,7 +13581,7 @@ spec:
         - --templateFile
         - /etc/istio/proxy/envoy_policy.yaml.tmpl
         - --controlPlaneAuthPolicy
-        - MUTUAL_TLS
+        - NONE
         env:
         - name: POD_NAME
           valueFrom:
@@ -13734,7 +13687,7 @@ spec:
         - --templateFile
         - /etc/istio/proxy/envoy_telemetry.yaml.tmpl
         - --controlPlaneAuthPolicy
-        - MUTUAL_TLS
+        - NONE
         env:
         - name: POD_NAME
           valueFrom:
@@ -13794,11 +13747,10 @@ spec:
       serviceAccountName: istio-pilot-service-account
       containers:
         - name: discovery
-          image: "docker.io/cilium/istio_pilot:1.0.2"
+          image: "docker.io/istio/pilot:1.0.3"
           imagePullPolicy: IfNotPresent
           args:
           - "discovery"
-          - --plugins=authn,authz,health,mixer,envoyfilter,cilium
           ports:
           - containerPort: 8080
           - containerPort: 15010
@@ -13854,7 +13806,7 @@ spec:
           - --templateFile
           - /etc/istio/proxy/envoy_pilot.yaml.tmpl
           - --controlPlaneAuthPolicy
-          - MUTUAL_TLS
+          - NONE
           env:
           - name: POD_NAME
             valueFrom:
@@ -15416,11 +15368,6 @@ metadata:
 spec:
   host: istio-policy.istio-system.svc.cluster.local
   trafficPolicy:
-    portLevelSettings:
-    - port:
-        number: 15004
-      tls:
-        mode: ISTIO_MUTUAL
     connectionPool:
       http:
         http2MaxRequests: 10000
@@ -15434,11 +15381,6 @@ metadata:
 spec:
   host: istio-telemetry.istio-system.svc.cluster.local
   trafficPolicy:
-    portLevelSettings:
-    - port:
-        number: 15004
-      tls:
-        mode: ISTIO_MUTUAL
     connectionPool:
       http:
         http2MaxRequests: 10000

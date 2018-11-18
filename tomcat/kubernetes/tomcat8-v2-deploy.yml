@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tomcat8
+  #命名规范:应用名称-版本
+  name: tomcat8-v2
   namespace: default
   labels:
     app: tomcat8
@@ -10,6 +11,7 @@ spec:
   selector:
     matchLabels:
       app: tomcat8
+      version: v2
 #  minReadySeconds: 60     #滚动升级时60s后认为该pod就绪
   strategy:
     rollingUpdate:  ##由于replicas为3,则整个升级,pod个数在2-4个之间
@@ -19,6 +21,10 @@ spec:
     metadata:
       labels:
         app: tomcat8
+        version: v2
+      annotations:
+        #enable istio sidecar injection
+        sidecar.istio.io/inject: "true"
     spec:
       terminationGracePeriodSeconds: 60 ##k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
       #imagePullSecrets:
