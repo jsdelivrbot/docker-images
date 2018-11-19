@@ -75,18 +75,18 @@ metadata:
 spec:
   host: tomcat8-svc
   #熔断器
-  trafficPolicy:
-    connectionPool:
-      tcp:
-        maxConnections: 100
-      http:
-        http1MaxPendingRequests: 1
-        maxRequestsPerConnection: 5
-    outlierDetection:
-      consecutiveErrors: 1
-      interval: 1s
-      baseEjectionTime: 3m
-      maxEjectionPercent: 100
+  #trafficPolicy:
+  #  connectionPool:
+  #    tcp:
+  #      maxConnections: 100
+  #    http:
+  #      http1MaxPendingRequests: 1
+  #      maxRequestsPerConnection: 5
+  #  outlierDetection:
+  #    consecutiveErrors: 1
+  #    interval: 1s
+  #    baseEjectionTime: 3m
+  #    maxEjectionPercent: 100
   #子集根据pod标签定义
   subsets:
   - name: v1

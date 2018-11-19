@@ -24,11 +24,11 @@ NewSQL数据库: TiDB,cockroachdb
 企业ERP: odoo
 开发环境SDK: golang,golang-gvm,oracle-jdk,oracle-jdk-maven
 微服务管理与持续发布: fabric8,jenkins-x,draft,knative
-微服务框架/组件: istio,dubbo,dubbokeeper,kong,kong-dashboard,consul,openlambda,linkerd2/Conduit
+微服务框架/组件: istio,naftis,dubbo,dubbokeeper,kong,kong-dashboard,consul,openlambda,linkerd2/Conduit
 FAAS: fission,fnproject,funktion,kubeless,nuclio,open-lambda,openfaas,openwhisk,vmware-dispatch
 日志集群: elastic-stack(elasticsearch+cerebro+kibana)
 日志采集: logstash,filebeat,logtail,log-pilot,logspout,auditbeat
-监控/APM: appdash,apm-server,cadvisor,heapster,kube-state-metrics,metrics-server,prometheus,pinpoint,jaeger,zipkin,skywalking,kubewatch,searchlight
+监控/APM: appdash,apm-server,cadvisor,heapster,kube-state-metrics,metrics-server,prometheus,thanos,pinpoint,jaeger,zipkin,skywalking,kubewatch,searchlight
 动态性能追踪: bcc-tools,systemtap,sysdig
 kubernetes可视化管理工具: kubernetes-dashboard,weavescope,kubebox,kubedash,kube-ops-view,cabin
 kubernetes灾难恢复: ark

@@ -7,7 +7,7 @@ metadata:
   namespace: istio-system
 spec:
   quotas:
-  #为所有计数器设置默认限流值
+  #为所有计数器设置默认限流值 500qps
   - name: requestcount.quota.istio-system
     maxAmount: 500
     validDuration: 1s
@@ -21,9 +21,9 @@ spec:
     # The following override applies to 'reviews' regardless
     # of the source.
     - dimensions:
-        destination: tomcat8-dr
-        source: "172.19.202.164"
-      maxAmount: 10
+        #目标主机 DestinationHost
+        destination: tomcat8-svc
+      maxAmount: 50
       validDuration: 1s
     - dimensions:
         destination: reviews
@@ -32,16 +32,12 @@ spec:
     # The following override applies to 'productpage' when
     # the source is a specific ip address.
     - dimensions:
+        #目标主机 DestinationHost
         destination: productpage
+        #源主机 SourceHost
         source: "10.28.11.20"
       maxAmount: 500
       validDuration: 1s
-    # The following override applies to 'productpage' regardless
-    # of the source.
-    - dimensions:
-        destination: productpage
-      maxAmount: 2
-      validDuration: 5s
     #redisServerUrl: <redis_server_url>
     #connectionPoolSize: 10
 ---
@@ -91,8 +87,8 @@ spec:
   - name: request-count
     namespace: istio-system
   services:
-  #- name: productpage
-  #  namespace: default
-  - service: '*'  # Uncomment this to bind *all* services to request-count
+  - name: tomcat8-svc
+    namespace: default
+  #- service: '*'  # Uncomment this to bind *all* services to request-count
 ---
 
