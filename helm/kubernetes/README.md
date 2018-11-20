@@ -25,6 +25,7 @@ helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 helm repo add kubeless-functions-charts https://kubeless-functions-charts.storage.googleapis.com
 helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo add openebs-charts https://openebs.github.io/charts/
 helm repo add fabric8 https://fabric8.io/helm
 helm repo add gitlab https://charts.gitlab.io
 helm repo add jenkins-x	https://chartmuseum.build.cd.jenkins-x.io
