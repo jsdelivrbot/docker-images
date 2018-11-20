@@ -10,7 +10,7 @@ kubernetes网络方案推荐使用cilium,支持vxlan,bgp以及eBPF引擎
 测试: chaos-monkey,chaoskube,k8s-testsuite,test-infra,sonobuoy,PowerfulSeal
 artifactory仓库: nexus2,nexus3,harbor,registry
 helm应用商店: chartmuseum,kubeapps
-分布式存储: ceph,minio
+分布式存储: ceph,minio,openebs,glusterfs
 大数据集群: hadoop(hdfs+yarn),hbase,spark,flink
 web服务器/容器: nginx-php,apache-php,tomcat,resin
 SQL数据库: mysql,percona,mariadb,postgresql

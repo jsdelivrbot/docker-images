@@ -4,16 +4,13 @@ ceph作为Kubernetes持久存储服务，以特权pod形式运行,osd能够访�
 
 使用限制与要求
 
-kubelet 调整配置kube_feature_gates 加上ReadOnlyAPIDataVolumes=false
 kubernetes 宿主机osd硬盘至少1TB,未分区裸盘，至少3个节点用于ceph存储，宿主机支持多个osd硬盘
 kubernetes 宿主机节点内核版本 >= 4.15
-kubernetes DNS组件仅支持kube-dns，不支持core-dns
 kubernetes 宿主机节点ceph版本支持mimic和luminous
 注：本文所用yaml涉及容器内核参数调优，需要内核版本4.15,低版本内核需要注释或者删除sysctl相关条目。
 ceph public和cluster networks必须相同，并且是kubernetes的集群宿主机网络.If the storage class user id is not admin, you will have to manually create the user in your Ceph cluster and create its secret in Kubernetes
 ceph-mgr can only run with 1 replica
 rgw对象存储支持集群内部和外部同时访问
-因为主机名检测问题，暂时不兼容istio
 
 生产环境安装过程
 
