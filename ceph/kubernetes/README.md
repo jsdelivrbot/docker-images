@@ -120,16 +120,6 @@ kubectl --namespace=ceph create secret generic ceph-rbd-kube \
   --from-literal="key=$(grep key ceph.client.kube.keyring  | awk '{ print $3 }')" \
   --type=kubernetes.io/rbd
 
-v1.11更新
-Create a Ceph admin secret
-ceph auth get client.admin 2>&1 |grep "key = " |awk '{print  $3'} |xargs echo -n > /tmp/secret
-kubectl create secret generic ceph-admin-secret --from-file=/tmp/secret --namespace=kube-system
-Create a Ceph pool and a user secret
-ceph osd pool create kube 8 8
-ceph auth add client.kube mon 'allow r' osd 'allow rwx pool=kube'
-ceph auth get-key client.kube > /tmp/secret
-kubectl create secret generic ceph-secret --from-file=/tmp/secret --namespace=kube-system
-
 创建RBD provisioner 使用namespace=ceph
 创建rbac授权
 kubectl create -f rbd-provisioner/clusterrolebinding.yaml
