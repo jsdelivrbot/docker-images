@@ -1,0 +1,4 @@
+1.rook-minio
+ceph/rook-kubernetes/minio
+2.helm
+

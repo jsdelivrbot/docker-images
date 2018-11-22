@@ -31,8 +31,14 @@ metadata:
   name: openebs-mongodb
   annotations:
     cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "1"
+      - name: StoragePool
+        value: default
       - name: FSType
         value: "xfs"
+      #- name: ReplicaAntiAffinityTopoKey
+      #  value: failure-domain.beta.kubernetes.io/zone
 provisioner: openebs.io/provisioner-iscsi
 #reclaimPolicy: Retain
 allowVolumeExpansion: true
