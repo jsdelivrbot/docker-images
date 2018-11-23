@@ -14,7 +14,8 @@ image:
   pullPolicy: IfNotPresent
 
 apiserver:
-  image: "quay.io/openebs/m-apiserver"
+  #image: "quay.io/openebs/m-apiserver"
+  image: "slpcat/m-apiserver"
   imageTag: "0.7.2"
   replicas: 1
   ports:
@@ -25,7 +26,8 @@ apiserver:
   affinity: {}
 
 provisioner:
-  image: "quay.io/openebs/openebs-k8s-provisioner"
+  #image: "quay.io/openebs/openebs-k8s-provisioner"
+  image: "slpcat/openebs-k8s-provisioner"
   imageTag: "0.7.2"
   replicas: 1
   nodeSelector: {}
@@ -34,10 +36,12 @@ provisioner:
 
 snapshotOperator:
   controller:
-    image: "quay.io/openebs/snapshot-controller"
+    #image: "quay.io/openebs/snapshot-controller"
+    image: "slpcat/snapshot-controller"
     imageTag: "0.7.2"
   provisioner:
-    image: "quay.io/openebs/snapshot-provisioner"
+    #image: "quay.io/openebs/snapshot-provisioner"
+    image: "slpcat/snapshot-provisioner"
     imageTag: "0.7.2"
   replicas: 1
   upgradeStrategy: "Recreate"
@@ -46,7 +50,8 @@ snapshotOperator:
   affinity: {}
 
 ndm:
-  image: "quay.io/openebs/node-disk-manager-amd64"
+  #image: "quay.io/openebs/node-disk-manager-amd64"
+  image: "slpcat/node-disk-manager-amd64"
   imageTag: "v0.2.0"
   sparse:
     enabled: "true"
@@ -59,26 +64,32 @@ ndm:
   nodeSelector: {}
 
 jiva:
-  image: "quay.io/openebs/jiva"
+  #image: "quay.io/openebs/jiva"
+  image: "slpcat/jiva"
   imageTag: "0.7.2"
   replicas: 3
 
 cstor:
   pool:
-    image: "quay.io/openebs/cstor-pool"
+    #image: "quay.io/openebs/cstor-pool"
+    image: "slpcat/cstor-pool"
     imageTag: "0.7.2"
   poolMgmt:
-    image: "quay.io/openebs/cstor-pool-mgmt"
+    #image: "quay.io/openebs/cstor-pool-mgmt"
+    image: "slpcat/cstor-pool-mgmt"
     imageTag: "0.7.2"
   target:
-    image: "quay.io/openebs/cstor-istgt"
+    #image: "quay.io/openebs/cstor-istgt"
+    image: "slpcat/cstor-istgt"
     imageTag: "0.7.2"
   volumeMgmt:
-    image: "quay.io/openebs/cstor-volume-mgmt"
+    #image: "quay.io/openebs/cstor-volume-mgmt"
+    image: "slpcat/cstor-volume-mgmt"
     imageTag: "0.7.2"
 
 policies:
   monitoring:
     enabled: true
-    image: "quay.io/openebs/m-exporter"
+    #image: "quay.io/openebs/m-exporter"
+    image: "slpcat/m-exporter"
     imageTag: "0.7.2"
