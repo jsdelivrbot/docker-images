@@ -18,3 +18,10 @@ helm install -n openebs --namespace openebs .
 
 3.使用默认或自定义的storageclass
 kubectl apply -f openebs-storageclasses.yaml
+
+生产环境推荐直接使用裸盘,使用cstor直接管理
+https://docs.openebs.io/docs/next/deploycstor.html
+每个宿主机有N个相同容量的数据盘
+kubectl get disks
+openebs-config.yaml 
+加入disk列表
