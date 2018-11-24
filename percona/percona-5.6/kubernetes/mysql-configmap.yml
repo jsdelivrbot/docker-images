@@ -17,7 +17,6 @@ data:
     character_set_server    = utf8
     collation_server        = utf8_general_ci
     #explicit_defaults_for_timestamp = true
-    max_connections=1500
     skip-external-locking
     #key_buffer_size = 64M
     bulk_insert_buffer_size = 64M
@@ -44,11 +43,11 @@ data:
     innodb_buffer_pool_size = 1024M
     skip-name-resolve
     #innodb_buffer_pool_instances = 8
-    innodb_file_per_table = 1
+    #innodb_file_per_table = 1
     #datadir = /data/mydata
     #log-bin=/data/binlogs/mysql-bin
     expire_logs_day=30
-    max_binlog_size = 200M
+    max_binlog_size = 256M
     slow_query_log=ON
     #slow-query-log-file=/data/binlogs/slow_query.log
     long_query_time=2
@@ -62,8 +61,8 @@ data:
     innodb_flush_log_at_trx_commit = 2
     innodb_log_files_in_group = 2
     innodb_max_dirty_pages_pct = 60
-    innodb_flush_method     = O_DIRECT
-    innodb_flush_neighbors  = 1
+    innodb_flush_method     = O_DIRECT_NO_FSYNC
+    innodb_flush_neighbors  = 0
     innodb_adaptive_flushing = 1
     #innodb_adaptive_flushing_method = "estimate"
     innodb_adaptive_hash_index = 1
@@ -76,12 +75,13 @@ data:
     #innodb_checksums       = 0
     innodb_doublewrite      = 0
     innodb_support_xa       = 1
-    innodb_use_native_aio   = 1
+    #innodb_use_native_aio   = 1
     innodb_stats_persistent = 1
-    innodb_purge_threads    = 1
+    innodb_purge_threads    = 4
     innodb_sync_spin_loops  = 100
     innodb_spin_wait_delay  = 30
     innodb_old_blocks_time  = 1000
+    innodb_log_block_size   = 4096
     innodb_old_blocks_pct   = 60
     innodb_open_files       = 4096
     [mysqldump]
