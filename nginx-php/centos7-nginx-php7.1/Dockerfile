@@ -14,7 +14,7 @@ ENV \
     LC_ALL="en_US.UTF-8" \
     TIMEZONE="Asia/Shanghai"
 
-COPY nginx.repo /etc/yum.repos.d/
+#COPY nginx.repo /etc/yum.repos.d/
 
 # set timezone
 RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
@@ -26,7 +26,7 @@ RUN  \
     yum update -y && \
     yum clean all && \
 
-    yum install -y php71w php71w-cli php71w-pear php71w-pgsql php71w-pecl-imagick \
+    yum install -y file php71w php71w-cli php71w-pear php71w-pgsql php71w-pecl-imagick \
         php71w-mbstring php71w-opcache php71w-fpm php71w-pecl-redis php71w-mysqlnd \
         php71w-pecl-memcached php71w-pecl-mongodb php71w-gd php71w-gmp php71w-soap \
         php71w-mcrypt php71w-ldap php71w-devel librdkafka librdkafka-devel gcc make
@@ -56,8 +56,8 @@ COPY conf/ /opt/docker/
 
 RUN set -x \
     # Install nginx
-    && yum install -y \
-        nginx \
+    #&& yum install -y \
+    #    nginx \
     && docker-run-bootstrap \
     && docker-image-cleanup
 
