@@ -55,11 +55,11 @@ ENV WEB_DOCUMENT_ROOT=/app \
 COPY conf/ /opt/docker/
 
 RUN set -x \
-    && mkdir -p /var/log/php-fpm && touch /var/log/php-fpm/error.log \
     # Install nginx
     && yum install -y \
         nginx \
     && docker-run-bootstrap \
-    && docker-image-cleanup
+    && docker-image-cleanup \
+    && mkdir -p /var/log/php-fpm && touch /var/log/php-fpm/error.log
 
 EXPOSE 80 443
