@@ -55,7 +55,7 @@ ENV WEB_DOCUMENT_ROOT=/app \
 COPY conf/ /opt/docker/
 
 RUN set -x \
-    && mkdir -p /var/log/php-fpm && touch /var/log/php-fpm/error.log && \
+    && mkdir -p /var/log/php-fpm && touch /var/log/php-fpm/error.log \
     # Install nginx
     && yum install -y \
         nginx \
