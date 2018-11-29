@@ -56,8 +56,8 @@ COPY conf/ /opt/docker/
 
 RUN set -x \
     # Install nginx
-    #&& yum install -y \
-    #    nginx \
+    && yum install -y \
+        nginx \
     && docker-run-bootstrap \
     && docker-image-cleanup
 
