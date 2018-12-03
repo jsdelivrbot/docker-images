@@ -14,10 +14,10 @@ systemctl start iscsid
 # kubectl label node <node-name> "openebs.io/nodegroup"="storage-node"
 #nodeSelector:
 #  "openebs.io/nodegroup": "storage-node"
-#kubectl apply -f openebs-operator.yaml
-或者使用helm安装OpenEBS
-kubectl create namespace openebs
-helm install -n openebs --namespace openebs .
+kubectl apply -f openebs-operator.yaml
+#或者使用helm安装OpenEBS
+#kubectl create namespace openebs
+#helm install -n openebs --namespace openebs .
 
 3.使用默认或自定义的storageclass
 kubectl apply -f openebs-storageclasses.yaml
@@ -33,7 +33,7 @@ openebs运行不依赖宿主机zfs，但是依旧建议宿主机安装zfs，便�
 支持为每个卷设定QOS,通过限制CPU/MEM实现
 
 https://docs.openebs.io/docs/next/deploycstor.html
-每个宿主机有N个相同容量的数据盘
+要求每个宿主机有N个相同容量的数据盘
 kubectl get disks
-openebs-config.yaml 
+编辑openebs-config.yaml 
 加入disk列表
