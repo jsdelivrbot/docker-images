@@ -325,7 +325,6 @@ RUN /usr/local/bin/install-plugins.sh       \
   javadoc:latest                 \
   jenkins-multijob-plugin:latest \
   job-dsl:latest                 \
-  jobConfigHistory:latest        \
   jquery:latest                  \
   junit:latest                   \
   kerberos-sso:latest            \
