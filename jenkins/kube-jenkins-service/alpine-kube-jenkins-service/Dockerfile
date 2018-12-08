@@ -257,7 +257,6 @@ RUN /usr/local/bin/install-plugins.sh       \
   android-emulator:latest        \
   android-lint:latest            \
   ant:latest                     \
-  analysis-core:latest           \
   ansible:latest                 \
   ansicolor:latest               \
   antisamy-markup-formatter:latest \
@@ -313,8 +312,6 @@ RUN /usr/local/bin/install-plugins.sh       \
   gitlab-merge-request-jenkins:latest \
   gitlab-oauth:latest            \
   gitlab-plugin:latest           \
-  google-oauth-plugin:latest     \
-  google-login:latest            \
   gradle:latest                  \
   gravatar:latest                \
   greenballs:latest              \
