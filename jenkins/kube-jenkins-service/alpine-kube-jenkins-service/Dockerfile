@@ -350,7 +350,6 @@ RUN /usr/local/bin/install-plugins.sh       \
   node-iterator-api:latest       \
   oauth-credentials:latest       \
   oic-auth:latest                \
-  openid:latest                  \
   openshift-login:latest         \
   pam-auth:latest                \
   parameterized-trigger:latest   \
