@@ -1,12 +1,12 @@
 <p align="center">
   <p align="center" style="width: 50%; height: 64px;">
-    <img src="https://cdn.rawgit.com/fabiolb/fabio/015e999/fabio.svg" height="64"/>
+    <img src="https://cdn.jsdelivr.net/gh/fabiolb/fabio@015e999/fabio.svg" height="64"/>
   </p>
   <p align="center" style="margin-top: 16px">
-    <a href="http://ebay.github.io/"><img src="https://cdn.rawgit.com/fabiolb/fabio/7a02e1f/ebay.png" height="32" style="padding-right: 4px"/></a>
-    <a href="http://www.ebayclassifiedsgroup.com"><img src="https://cdn.rawgit.com/fabiolb/fabio/7a02e1f/ecg.png" height="32"/></a>
-    <a href="http://www.mytaxi.de"><img src="https://cdn.rawgit.com/fabiolb/fabio/7a02e1f/mytaxi.png" height="32"/></a>
-    <a href="http://www.classmarkets.com"><img src="https://cdn.rawgit.com/fabiolb/fabio/7a02e1f/classmarkets.png" height="32"/></a>
+    <a href="http://ebay.github.io/"><img src="https://cdn.jsdelivr.net/gh/fabiolb/fabio@7a02e1f/ebay.png" height="32" style="padding-right: 4px"/></a>
+    <a href="http://www.ebayclassifiedsgroup.com"><img src="https://cdn.jsdelivr.net/gh/fabiolb/fabio@7a02e1f/ecg.png" height="32"/></a>
+    <a href="http://www.mytaxi.de"><img src="https://cdn.jsdelivr.net/gh/fabiolb/fabio@7a02e1f/mytaxi.png" height="32"/></a>
+    <a href="http://www.classmarkets.com"><img src="https://cdn.jsdelivr.net/gh/fabiolb/fabio@7a02e1f/classmarkets.png" height="32"/></a>
   </p>
   <p align="center" style="margin-top: 16px">
     <a href="https://github.com/fabiolb/fabio/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/fabiolb/fabio.svg?style=flat-square"></a>
